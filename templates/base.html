@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}Connect - Saúde{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'assets/favicon.png' %}" type="image/png">
+    <link rel="apple-touch-icon" href="{% static 'assets/favicon.png' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}bg-login{% endblock %}">
+    {% if messages %}
+        <div id="notification-container">
+            {% for message in messages %}
+                <div class="toast {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="app">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        // Auto-dismiss notifications after 4 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    toast.style.animation = 'slideOutToast 0.4s ease-out forwards';
+                    setTimeout(() => toast.remove(), 400);
+                }, 4000);
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

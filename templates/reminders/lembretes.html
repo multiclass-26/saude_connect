@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}bg-paciente{% endblock %}
+
+{% block content %}
+<section class="screen active">
+    <a href="{% url 'dashboard_paciente' %}" class="back">← Voltar</a>
+    <h2>Lembretes de Medicação</h2>
+    
+    <div class="panel">
+        <h3>Novo Lembrete</h3>
+        <form method="post" class="form">
+            {% csrf_token %}
+            <input name="medicamento" type="text" placeholder="Nome do medicamento" required>
+            <input name="data_hora" type="datetime-local" required>
+            <button type="submit" class="primary">Adicionar Lembrete</button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h3>Seus Lembretes</h3>
+        <div id="lista-alarmes-paciente">
+            {% if alarmes %}
+                {% for alarme in alarmes %}
+                <div class="alarme-item">
+                    <div>
+                        <strong>{{ alarme.medicamento }}</strong>
+                        <span>{{ alarme.data_hora|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <button class="primary delete-btn alarme-delete-btn" onclick="excluirAlarme({{ alarme.id }})">
+                        Excluir
+                    </button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Nenhum lembrete ativo.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<audio id="alarm-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-clock-beep-988.mp3" preload="auto"></audio>
+
+<script>
+function excluirAlarme(id) {
+    fetch(`/lembretes/excluir/${id}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function verificarAlarmes() {
+    fetch('/lembretes/verificar/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.alarmes && data.alarmes.length > 0) {
+                data.alarmes.forEach(alarme => {
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('Lembrete de Medicamento', {
+                            body: `Hora de tomar: ${alarme.medicamento}`,
+                            icon: '{% static "assets/favicon.png" %}'
+                        });
+                    } else {
+                        alert(`LEMBRETE: Hora de tomar ${alarme.medicamento}!`);
+                    }
+                    
+                    const sound = document.getElementById('alarm-sound');
+                    if (sound) sound.play();
+                });
+                
+                setTimeout(() => location.reload(), 2000);
+            }
+        });
+}
+
+if ('Notification' in window && Notification.permission !== 'granted') {
+    Notification.requestPermission();
+}
+
+setInterval(verificarAlarmes, 10000);
+verificarAlarmes();
+</script>
+{% endblock %}

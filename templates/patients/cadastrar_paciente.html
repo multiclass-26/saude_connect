@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}bg-agente{% endblock %}
+
+{% block content %}
+<section class="screen active">
+    <a href="{% url 'dashboard_agente' %}" class="back">← Voltar ao Menu</a>
+    <h2>Cadastrar Novo Paciente</h2>
+    
+    <div class="panel">
+        <form method="post" enctype="multipart/form-data" class="form">
+            {% csrf_token %}
+            
+            <div class="photo-capture-block">
+                <label for="foto-input">
+                    <img id="photo-preview" src="" alt="Prévia da foto" class="photo-preview-circle" style="display: none;">
+                    <img id="photo-placeholder" src="{% static 'assets/avatar.png' %}" alt="Adicionar Foto" class="photo-placeholder-icon">
+                </label>
+                <input type="file" accept="image/*" id="foto-input" name="foto" style="display: none;">
+            </div>
+            
+            <input name="nome" type="text" placeholder="Nome completo" required>
+            <input name="idade" type="number" placeholder="Idade" required>
+            <input name="peso" type="number" step="0.01" placeholder="Peso (kg)">
+            <input name="cpf" type="text" placeholder="CPF">
+            <input name="pessoas" type="number" placeholder="Qtd. pessoas na casa">
+            
+            <select name="cidade" id="cidade" required>
+                <option value="">Selecione a cidade</option>
+                <option value="Aracaju">Aracaju</option>
+                <option value="Itabaiana">Itabaiana</option>
+                <option value="Lagarto">Lagarto</option>
+            </select>
+            
+            <select name="bairro" id="bairro" required>
+                <option value="">Selecione o bairro</option>
+            </select>
+            
+            <input name="endereco" type="text" placeholder="Endereço">
+            
+            <div class="checkbox-group">
+                <label class="checkbox-row">
+                    <input type="checkbox" name="comorbidade" id="comorbidade"> Possui comorbidade?
+                </label>
+                <div id="comorbidade-box" class="hidden conditional-box">
+                    <input name="comorbidadeTipo" type="text" placeholder="Qual?">
+                </div>
+            </div>
+            
+            <div class="checkbox-row-inline">
+                <label class="checkbox-row">
+                    <input type="checkbox" name="avc"> AVC
+                </label>
+                <label class="checkbox-row">
+                    <input type="checkbox" name="infarto"> Infarto
+                </label>
+            </div>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-row">
+                    <input type="checkbox" name="bebe" id="bebe"> Paciente bebe?
+                </label>
+                <div id="bebe-box" class="hidden conditional-box">
+                    <input name="bebeTipo" type="text" placeholder="Fermentada ou Destilada?">
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-row">
+                    <input type="checkbox" name="fuma" id="fuma"> Paciente fuma?
+                </label>
+                <div id="fuma-box" class="hidden conditional-box">
+                    <input name="cigarrosPorDia" type="number" placeholder="Quantos cigarros por dia?">
+                    <input name="anosFumando" type="number" placeholder="Quantos anos fuma?">
+                </div>
+            </div>
+            
+            <input name="medicamento" type="text" placeholder="Medicamentos em uso">
+            
+            <div class="checkbox-group">
+                <label class="checkbox-row">
+                    <input type="checkbox" name="alergia" id="alergia"> Possui alergia?
+                </label>
+                <div id="alergia-box" class="hidden conditional-box">
+                    <input name="alergiaTipo" type="text" placeholder="Qual tipo?">
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-row">
+                    <input type="checkbox" name="atividade" id="atividade"> Pratica atividade física?
+                </label>
+                <div id="atividade-box" class="hidden conditional-box">
+                    <input name="atividadeTipo" type="text" placeholder="Qual exercício?">
+                    <select name="atividadeFrequencia">
+                        <option value="">Selecione a frequência</option>
+                        <option value="1 vez na semana">1 vez na semana</option>
+                        <option value="1 a 3 vezes na semana">1 a 3 vezes na semana</option>
+                        <option value="Mais de 3 vezes na semana">Mais de 3 vezes na semana</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="primary">Salvar Paciente</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+document.getElementById('foto-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('photo-preview').src = e.target.result;
+            document.getElementById('photo-preview').style.display = 'block';
+            document.getElementById('photo-placeholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+['comorbidade', 'bebe', 'fuma', 'alergia', 'atividade'].forEach(id => {
+    document.getElementById(id).addEventListener('change', function() {
+        document.getElementById(id + '-box').classList.toggle('hidden', !this.checked);
+    });
+});
+
+const bairros = {
+    'Aracaju': ['Atalaia', 'Centro', 'Jardins', 'Farolândia'],
+    'Itabaiana': ['Centro', 'Porto', 'Queimadas'],
+    'Lagarto': ['Centro']
+};
+
+document.getElementById('cidade').addEventListener('change', function() {
+    const cidade = this.value;
+    const bairroSelect = document.getElementById('bairro');
+    bairroSelect.innerHTML = '<option value="">Selecione o bairro</option>';
+    
+    if (bairros[cidade]) {
+        bairros[cidade].forEach(bairro => {
+            const option = document.createElement('option');
+            option.value = bairro;
+            option.textContent = bairro;
+            bairroSelect.appendChild(option);
+        });
+    }
+});
+</script>
+{% endblock %}

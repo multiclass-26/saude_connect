@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}bg-agente{% endblock %}
+
+{% block content %}
+<section class="screen active">
+    <a href="{% url 'logout' %}" class="back">← Sair</a>
+    <h2>Agente de Saúde</h2>
+    <div class="panel">
+        <a href="{% url 'cadastrar_paciente' %}" style="text-decoration: none;">
+            <button class="primary">Registrar Novo Paciente</button>
+        </a>
+        <button class="primary" onclick="window.location.href='#pacientes'">Pacientes Registrados ({{ pacientes.count }})</button>
+    </div>
+</section>
+
+<section id="pacientes" style="margin-top: 20px;">
+    <h3>Meus Pacientes</h3>
+    <div class="panel">
+        {% for paciente in pacientes %}
+        <div class="paciente-card">
+            <div class="paciente-header">
+                <div class="paciente-header-info">
+                    {% if paciente.foto %}
+                        <img src="{{ paciente.foto.url }}" alt="Foto de {{ paciente.nome }}" class="paciente-list-photo">
+                    {% else %}
+                        <div class="paciente-list-photo-placeholder">{{ paciente.nome.0|upper }}</div>
+                    {% endif %}
+                    <span>{{ paciente.nome }}</span>
+                </div>
+                <span class="paciente-toggle">▶&#xFE0E;</span>
+            </div>
+            <div class="paciente-content">
+                <div class="form">
+                    {% if paciente.foto %}
+                        <img src="{{ paciente.foto.url }}" alt="Foto" class="paciente-detail-photo">
+                    {% endif %}
+                    <h4>Detalhes do Paciente</h4>
+                    <p><strong>Nome:</strong> {{ paciente.nome }}</p>
+                    <p><strong>Idade:</strong> {{ paciente.idade }} anos</p>
+                    <p><strong>CPF:</strong> {{ paciente.cpf|default:"Não informado" }}</p>
+                    <p><strong>Cadastrado em:</strong> {{ paciente.criado_em|date:"d/m/Y H:i" }}</p>
+                    <div class="form-actions">
+                        <button onclick="excluirPaciente({{ paciente.id }})" class="primary delete-btn">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Nenhum paciente cadastrado ainda.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.paciente-header').forEach(header => {
+    header.addEventListener('click', function() {
+        this.closest('.paciente-card').classList.toggle('open');
+    });
+});
+
+function excluirPaciente(id) {
+    if (!confirm('Tem certeza que deseja excluir este paciente?')) return;
+    
+    fetch(`/pacientes/excluir/${id}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Erro ao excluir paciente');
+        }
+    });
+}
+</script>
+{% endblock %}

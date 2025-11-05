@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}bg-paciente{% endblock %}
+
+{% block content %}
+<section class="screen active">
+    <a href="{% url 'logout' %}" class="back">← Sair</a>
+    <h2>Área do Paciente</h2>
+    
+    <div class="panel login-block">
+        <a href="{% url 'lembretes' %}" style="text-decoration: none; width: 90%; max-width: 360px;">
+            <button class="primary">Lembretes de Medicação</button>
+        </a>
+        <button class="primary">Movimente-se</button>
+        <button class="primary">Importância do Tratamento</button>
+        <button class="primary">Campanhas do Mês</button>
+    </div>
+</section>
+{% endblock %}

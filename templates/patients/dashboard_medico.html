@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}bg-medico{% endblock %}
+
+{% block content %}
+<section class="screen active">
+    <a href="{% url 'logout' %}" class="back">← Sair</a>
+    <h2>Dashboard - Médico</h2>
+    
+    <form method="get" style="margin-bottom: 20px;">
+        <input type="text" name="search" id="search-medico" placeholder="Buscar paciente por nome ou CPF..." 
+               class="search-input" value="{{ search }}">
+    </form>
+    
+    <div id="medico-pacientes-list" class="panel">
+        {% for paciente in pacientes %}
+        <div class="paciente-card">
+            <div class="paciente-header">
+                <div class="paciente-header-info">
+                    {% if paciente.foto %}
+                        <img src="{{ paciente.foto.url }}" alt="Foto de {{ paciente.nome }}" class="paciente-list-photo">
+                    {% else %}
+                        <div class="paciente-list-photo-placeholder">{{ paciente.nome.0|upper }}</div>
+                    {% endif %}
+                    <span>{{ paciente.nome }}</span>
+                </div>
+                <span class="paciente-toggle">▶&#xFE0E;</span>
+            </div>
+            <div class="paciente-content">
+                <div class="form">
+                    {% if paciente.foto %}
+                        <img src="{{ paciente.foto.url }}" alt="Foto" class="paciente-detail-photo">
+                    {% endif %}
+                    <h4>Detalhes do Paciente</h4>
+                    <p><strong>Nome:</strong> {{ paciente.nome }}</p>
+                    <p><strong>Idade:</strong> {{ paciente.idade }} anos</p>
+                    <p><strong>CPF:</strong> {{ paciente.cpf|default:"Não informado" }}</p>
+                    <p><strong>Peso:</strong> {{ paciente.peso|default:"Não informado" }} kg</p>
+                    <p><strong>Endereço:</strong> {{ paciente.endereco }}</p>
+                    <p><strong>Cidade/Bairro:</strong> {{ paciente.cidade }} - {{ paciente.bairro }}</p>
+                    
+                    {% if paciente.comorbidade %}
+                        <p><strong>Comorbidade:</strong> {{ paciente.comorbidade_tipo }}</p>
+                    {% endif %}
+                    
+                    {% if paciente.teve_avc %}<p><strong>Histórico:</strong> AVC</p>{% endif %}
+                    {% if paciente.teve_infarto %}<p><strong>Histórico:</strong> Infarto</p>{% endif %}
+                    
+                    {% if paciente.bebe %}
+                        <p><strong>Bebida:</strong> {{ paciente.tipo_bebida }}</p>
+                    {% endif %}
+                    
+                    {% if paciente.fuma %}
+                        <p><strong>Fumante:</strong> {{ paciente.cigarros_por_dia }} cigarros/dia, {{ paciente.anos_fumando }} anos</p>
+                        <p><strong>Carga Tabágica:</strong> {{ paciente.carga_tabagica|floatformat:2 }} maços-ano</p>
+                    {% endif %}
+                    
+                    {% if paciente.medicamentos %}
+                        <p><strong>Medicamentos:</strong> {{ paciente.medicamentos }}</p>
+                    {% endif %}
+                    
+                    {% if paciente.alergia %}
+                        <p><strong>Alergia:</strong> {{ paciente.alergia_tipo }}</p>
+                    {% endif %}
+                    
+                    {% if paciente.atividade_fisica %}
+                        <p><strong>Atividade Física:</strong> {{ paciente.atividade_tipo }} - {{ paciente.atividade_frequencia }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Nenhum paciente encontrado.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+document.querySelectorAll('.paciente-header').forEach(header => {
+    header.addEventListener('click', function() {
+        this.closest('.paciente-card').classList.toggle('open');
+    });
+});
+
+const searchInput = document.getElementById('search-medico');
+searchInput.addEventListener('input', function() {
+    setTimeout(() => {
+        this.form.submit();
+    }, 500);
+});
+</script>
+{% endblock %}

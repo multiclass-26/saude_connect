@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}bg-login{% endblock %}
+
+{% block content %}
+<section class="screen active">
+    <a href="{% url 'login' %}" class="back" style="color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 15px; display: inline-block; font-weight: 600;">← Voltar ao Login</a>
+    <h2 style="color: var(--accent-dark); font-size: 2rem; font-weight: 800;">Criar Nova Conta</h2>
+    <nav class="login-block">
+        <button onclick="showRegForm('agente')">Agente de Saúde</button>
+        <button onclick="showRegForm('medico')">Médico</button>
+        <button onclick="showRegForm('paciente')">Paciente</button>
+    </nav>
+
+    <div id="reg-forms" style="display: none; margin-top: 20px;">
+        <form method="post" class="form panel">
+            {% csrf_token %}
+            <input type="hidden" id="tipo-reg" name="tipo" value="">
+            <h3 id="reg-title"></h3>
+            
+            <div id="field-id-agente" style="display: none; width: 100%; display: flex; justify-content: center;">
+                <input type="text" name="id" placeholder="ID do Agente" style="width: 90%; max-width: 420px;">
+            </div>
+            
+            <div id="field-crm" style="display: none; width: 100%; display: flex; justify-content: center;">
+                <input type="text" name="crm" placeholder="CRM" style="width: 90%; max-width: 420px;">
+            </div>
+            
+            <input type="text" name="cpf" placeholder="CPF" required>
+            <input type="text" name="nome" placeholder="Nome completo" required>
+            <input type="email" name="email" placeholder="E-mail" required>
+            <input type="text" name="endereco" placeholder="Endereço" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            
+            <button type="submit" class="primary">Registrar</button>
+            <button type="button" onclick="hideRegForm()" class="back">← Voltar</button>
+        </form>
+    </div>
+</section>
+
+<script>
+function showRegForm(tipo) {
+    const regForms = document.getElementById('reg-forms');
+    const loginBlock = document.querySelector('.login-block');
+    const backLink = document.querySelector('.back');
+    const heading = document.querySelector('h2');
+    
+    regForms.style.display = 'block';
+    loginBlock.style.display = 'none';
+    backLink.style.display = 'none';
+    heading.style.display = 'none';
+    
+    document.getElementById('tipo-reg').value = tipo;
+    
+    const fieldIdAgente = document.getElementById('field-id-agente');
+    const fieldCrm = document.getElementById('field-crm');
+    
+    if (tipo === 'agente') {
+        fieldIdAgente.style.display = 'flex';
+        fieldCrm.style.display = 'none';
+        fieldIdAgente.querySelector('input').required = true;
+        fieldCrm.querySelector('input').required = false;
+    } else if (tipo === 'medico') {
+        fieldIdAgente.style.display = 'none';
+        fieldCrm.style.display = 'flex';
+        fieldIdAgente.querySelector('input').required = false;
+        fieldCrm.querySelector('input').required = true;
+    } else {
+        fieldIdAgente.style.display = 'none';
+        fieldCrm.style.display = 'none';
+        fieldIdAgente.querySelector('input').required = false;
+        fieldCrm.querySelector('input').required = false;
+    }
+    
+    const titles = {
+        'agente': 'Registro - Agente de Saúde',
+        'medico': 'Registro - Médico',
+        'paciente': 'Registro - Paciente'
+    };
+    
+    document.getElementById('reg-title').textContent = titles[tipo];
+}
+
+function hideRegForm() {
+    const regForms = document.getElementById('reg-forms');
+    const loginBlock = document.querySelector('.login-block');
+    const backLink = document.querySelector('.back');
+    const heading = document.querySelector('h2');
+    
+    regForms.style.display = 'none';
+    loginBlock.style.display = 'flex';
+    backLink.style.display = 'inline-block';
+    heading.style.display = 'block';
+}
+</script>
+{% endblock %}
