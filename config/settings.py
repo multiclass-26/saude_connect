@@ -30,6 +30,12 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
+# CSRF Trusted Origins - para Railway
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-6faf.up.railway.app',
+    'https://*.railway.app',
+]
+
 
 # Application definition
 
