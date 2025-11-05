@@ -109,7 +109,7 @@ def setup_view(request):
                     atividade_fisica=True,
                     atividade_tipo='Caminhada',
                     atividade_frequencia='3x por semana',
-                    agente=agente_user.agentesaude if agente_user and hasattr(agente_user, 'agentesaude') else None
+                    agente=agente_user.agente if agente_user and hasattr(agente_user, 'agente') else None
                 )
                 html += "<p>✓ Paciente Maria Silva criado</p>"
 
@@ -134,7 +134,7 @@ def setup_view(request):
                     bebe=True,
                     tipo_bebida='Cerveja ocasionalmente',
                     atividade_fisica=False,
-                    agente=agente_user.agentesaude if agente_user and hasattr(agente_user, 'agentesaude') else None
+                    agente=agente_user.agente if agente_user and hasattr(agente_user, 'agente') else None
                 )
                 html += "<p>✓ Paciente João Santos criado</p>"
 
@@ -158,7 +158,7 @@ def setup_view(request):
                     anos_fumando=20,
                     bebe=False,
                     atividade_fisica=False,
-                    agente=agente_user.agentesaude if agente_user and hasattr(agente_user, 'agentesaude') else None
+                    agente=agente_user.agente if agente_user and hasattr(agente_user, 'agente') else None
                 )
                 html += "<p>✓ Paciente Ana Costa criado</p>"
 
@@ -182,7 +182,7 @@ def setup_view(request):
                     atividade_fisica=True,
                     atividade_tipo='Musculação',
                     atividade_frequencia='5x por semana',
-                    agente=agente_user.agentesaude if agente_user and hasattr(agente_user, 'agentesaude') else None
+                    agente=agente_user.agente if agente_user and hasattr(agente_user, 'agente') else None
                 )
                 html += "<p>✓ Paciente Carlos Mendes criado</p>"
 
@@ -206,7 +206,7 @@ def setup_view(request):
                     atividade_fisica=True,
                     atividade_tipo='Hidroginástica',
                     atividade_frequencia='2x por semana',
-                    agente=agente_user.agentesaude if agente_user and hasattr(agente_user, 'agentesaude') else None
+                    agente=agente_user.agente if agente_user and hasattr(agente_user, 'agente') else None
                 )
                 html += "<p>✓ Paciente Rosa Lima criado</p>"
 
