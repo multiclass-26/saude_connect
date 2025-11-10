@@ -97,3 +97,9 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Logout realizado com sucesso!')
     return redirect('login')
+
+def comunidade_view(request):
+    return render(request, 'comunidade.html')
+
+def informacoes_view(request):
+    return render(request, 'informacoes.html')

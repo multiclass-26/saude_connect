@@ -4,74 +4,215 @@
 {% block body_class %}bg-medico{% endblock %}
 
 {% block content %}
-<section class="screen active">
-    <a href="{% url 'logout' %}" class="back">← Sair</a>
-    <h2>Dashboard - Médico</h2>
-    
-    <form method="get" style="margin-bottom: 20px;">
-        <input type="text" name="search" id="search-medico" placeholder="Buscar paciente por nome ou CPF..." 
-               class="search-input" value="{{ search }}">
-    </form>
-    
-    <div id="medico-pacientes-list" class="panel">
-        {% for paciente in pacientes %}
-        <div class="paciente-card">
-            <div class="paciente-header">
-                <div class="paciente-header-info">
-                    {% if paciente.foto %}
-                        <img src="{{ paciente.foto.url }}" alt="Foto de {{ paciente.nome }}" class="paciente-list-photo">
-                    {% else %}
-                        <div class="paciente-list-photo-placeholder">{{ paciente.nome.0|upper }}</div>
-                    {% endif %}
-                    <span>{{ paciente.nome }}</span>
+<div class="container" style="max-width: 1400px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-dark);">Dashboard Médico</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Bem-vindo, Dr(a). {{ user.first_name }}!</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'comunidade' %}" class="btn" style="background: var(--accent); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.2); transition: all 0.2s;">
+                Comunidade
+            </a>
+            <a href="{% url 'informacoes' %}" class="btn" style="background: white; border: 2px solid var(--accent); color: var(--accent-dark); text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; transition: all 0.2s;">
+                Informações
+            </a>
+            <a href="{% url 'logout' %}" class="btn" style="background: var(--danger); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2); transition: all 0.2s;">
+                Sair
+            </a>
+        </div>
+    </div>
+
+    <!-- Cards de Estatísticas -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="panel" style="background: white; border-left: 4px solid var(--accent); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Total de Pacientes</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: var(--accent-dark);">{{ pacientes.count }}</div>
                 </div>
-                <span class="paciente-toggle">▶&#xFE0E;</span>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent-light), var(--accent)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.3);">
+                </div>
             </div>
-            <div class="paciente-content">
-                <div class="form">
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Sob seus cuidados
+            </div>
+        </div>
+
+        <div class="panel" style="background: white; border-left: 4px solid #3b82f6; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Consultas Hoje</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: #3b82f6;">12</div>
+                </div>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #60a5fa, #3b82f6); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                </div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Agendadas para hoje
+            </div>
+        </div>
+
+        <div class="panel" style="background: white; border-left: 4px solid var(--warning); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Casos Urgentes</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: var(--warning);">3</div>
+                </div>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #fbbf24, var(--warning)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+                </div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Requerem atenção imediata
+            </div>
+        </div>
+
+        <div class="panel" style="background: white; border-left: 4px solid var(--success); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Adesão ao Tratamento</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: var(--success);">87%</div>
+                </div>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #34d399, var(--success)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                </div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Taxa média de adesão
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="panel" style="margin-bottom: 2rem; background: white;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.3rem; color: var(--accent-dark); text-align: left;">Ações Rápidas</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <button style="display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; border: none; cursor: pointer;">
+                Nova Prescrição
+            </button>
+            <button style="display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: #3b82f6; color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); transition: all 0.2s; border: none; cursor: pointer;" onclick="window.location.href='#pacientes'">
+                Ver Pacientes
+            </button>
+            <button style="display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: #8b5cf6; color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25); transition: all 0.2s; border: none; cursor: pointer;">
+                Relatórios
+            </button>
+            <button style="display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: white; color: var(--accent-dark); border: 2px solid var(--accent); border-radius: 10px; font-weight: 600; transition: all 0.2s; cursor: pointer;">
+                Agenda
+            </button>
+        </div>
+    </div>
+
+    <!-- Busca de Pacientes -->
+    <div class="panel" style="margin-bottom: 2rem; background: white;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.3rem; color: var(--accent-dark); text-align: left;">Buscar Paciente</h3>
+        <form method="get">
+            <input type="text" name="search" id="search-medico" placeholder="Buscar por nome ou CPF..." 
+                   class="search-input" value="{{ search }}" 
+                   style="width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s;">
+        </form>
+    </div>
+</div>
+
+<!-- Lista de Pacientes -->
+<section id="pacientes" style="max-width: 1400px; margin: 0 auto; padding: 0 1rem;">
+    <h3 style="color: var(--accent-dark); text-align: left; margin-bottom: 1.5rem;">Pacientes</h3>
+    
+    <div id="medico-pacientes-list">
+        {% for paciente in pacientes %}
+        <div class="paciente-card" style="margin-bottom: 1rem; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); border: 2px solid #f3f4f6; transition: all 0.3s;">
+            <div class="paciente-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; cursor: pointer; background: linear-gradient(135deg, #f9fafb, #ffffff);">
+                <div class="paciente-header-info" style="display: flex; align-items: center; gap: 1rem; flex: 1;">
                     {% if paciente.foto %}
-                        <img src="{{ paciente.foto.url }}" alt="Foto" class="paciente-detail-photo">
+                        <img src="{{ paciente.foto.url }}" alt="Foto de {{ paciente.nome }}" class="paciente-list-photo" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-light); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                    {% else %}
+                        <div class="paciente-list-photo-placeholder" style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: bold; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.3);">{{ paciente.nome.0|upper }}</div>
                     {% endif %}
-                    <h4>Detalhes do Paciente</h4>
-                    <p><strong>Nome:</strong> {{ paciente.nome }}</p>
-                    <p><strong>Idade:</strong> {{ paciente.idade }} anos</p>
-                    <p><strong>CPF:</strong> {{ paciente.cpf|default:"Não informado" }}</p>
-                    <p><strong>Peso:</strong> {{ paciente.peso|default:"Não informado" }} kg</p>
-                    <p><strong>Endereço:</strong> {{ paciente.endereco }}</p>
-                    <p><strong>Cidade/Bairro:</strong> {{ paciente.cidade }} - {{ paciente.bairro }}</p>
-                    
-                    {% if paciente.comorbidade %}
-                        <p><strong>Comorbidade:</strong> {{ paciente.comorbidade_tipo }}</p>
-                    {% endif %}
-                    
-                    {% if paciente.teve_avc %}<p><strong>Histórico:</strong> AVC</p>{% endif %}
-                    {% if paciente.teve_infarto %}<p><strong>Histórico:</strong> Infarto</p>{% endif %}
-                    
-                    {% if paciente.bebe %}
-                        <p><strong>Bebida:</strong> {{ paciente.tipo_bebida }}</p>
+                    <span style="font-weight: 700; color: var(--text-primary); font-size: 1.1rem;">{{ paciente.nome }}</span>
+                </div>
+                <span class="paciente-toggle" style="font-size: 1.3rem; color: var(--accent); transition: transform 0.3s;">▶&#xFE0E;</span>
+            </div>
+            <div class="paciente-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: #fafafa;">
+                <div style="padding: 1.5rem;">
+                    {% if paciente.foto %}
+                        <img src="{{ paciente.foto.url }}" alt="Foto" class="paciente-detail-photo" style="width: 100%; max-width: 200px; display: block; margin: 0 auto 1.5rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
                     {% endif %}
                     
-                    {% if paciente.fuma %}
-                        <p><strong>Fumante:</strong> {{ paciente.cigarros_por_dia }} cigarros/dia, {{ paciente.anos_fumando }} anos</p>
-                        <p><strong>Carga Tabágica:</strong> {{ paciente.carga_tabagica|floatformat:2 }} maços-ano</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent);">
+                            <h4 style="color: var(--accent-dark); margin-bottom: 0.75rem; font-size: 1rem;">Informações Básicas</h4>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Idade:</strong> {{ paciente.idade }} anos</p>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">CPF:</strong> {{ paciente.cpf|default:"Não informado" }}</p>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Peso:</strong> {{ paciente.peso|default:"Não informado" }} kg</p>
+                        </div>
+
+                        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6;">
+                            <h4 style="color: #3b82f6; margin-bottom: 0.75rem; font-size: 1rem;">Endereço</h4>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Endereço:</strong> {{ paciente.endereco }}</p>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Cidade:</strong> {{ paciente.cidade }}</p>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Bairro:</strong> {{ paciente.bairro }}</p>
+                        </div>
+                    </div>
+
+                    {% if paciente.comorbidade or paciente.teve_avc or paciente.teve_infarto %}
+                    <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--danger); margin-bottom: 1rem;">
+                        <h4 style="color: var(--danger); margin-bottom: 0.75rem; font-size: 1rem;">Histórico Médico</h4>
+                        {% if paciente.comorbidade %}
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Comorbidade:</strong> {{ paciente.comorbidade_tipo }}</p>
+                        {% endif %}
+                        {% if paciente.teve_avc %}
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Histórico:</strong> AVC</p>
+                        {% endif %}
+                        {% if paciente.teve_infarto %}
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Histórico:</strong> Infarto</p>
+                        {% endif %}
+                    </div>
                     {% endif %}
-                    
-                    {% if paciente.medicamentos %}
-                        <p><strong>Medicamentos:</strong> {{ paciente.medicamentos }}</p>
-                    {% endif %}
-                    
-                    {% if paciente.alergia %}
-                        <p><strong>Alergia:</strong> {{ paciente.alergia_tipo }}</p>
-                    {% endif %}
-                    
-                    {% if paciente.atividade_fisica %}
-                        <p><strong>Atividade Física:</strong> {{ paciente.atividade_tipo }} - {{ paciente.atividade_frequencia }}</p>
-                    {% endif %}
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                        {% if paciente.fuma or paciente.bebe %}
+                        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--warning);">
+                            <h4 style="color: var(--warning); margin-bottom: 0.75rem; font-size: 1rem;">Hábitos</h4>
+                            {% if paciente.fuma %}
+                                <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Fumante:</strong> {{ paciente.cigarros_por_dia }} cigarros/dia</p>
+                                <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Anos fumando:</strong> {{ paciente.anos_fumando }} anos</p>
+                                <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Carga Tabágica:</strong> {{ paciente.carga_tabagica|floatformat:2 }} maços-ano</p>
+                            {% endif %}
+                            {% if paciente.bebe %}
+                                <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Bebida:</strong> {{ paciente.tipo_bebida }}</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        {% if paciente.medicamentos %}
+                        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 3px solid #8b5cf6;">
+                            <h4 style="color: #8b5cf6; margin-bottom: 0.75rem; font-size: 1rem;">Medicamentos</h4>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);">{{ paciente.medicamentos }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if paciente.alergia %}
+                        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--danger);">
+                            <h4 style="color: var(--danger); margin-bottom: 0.75rem; font-size: 1rem;">Alergias</h4>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);">{{ paciente.alergia_tipo }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if paciente.atividade_fisica %}
+                        <div style="background: white; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--success);">
+                            <h4 style="color: var(--success); margin-bottom: 0.75rem; font-size: 1rem;">Atividade Física</h4>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Tipo:</strong> {{ paciente.atividade_tipo }}</p>
+                            <p style="margin: 0.5rem 0; color: var(--text-secondary);"><strong style="color: var(--text-primary);">Frequência:</strong> {{ paciente.atividade_frequencia }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
         {% empty %}
-        <p>Nenhum paciente encontrado.</p>
+        <div class="panel" style="padding: 3rem 2rem; text-align: center; background: white;">
+            <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-secondary);">Nenhum paciente encontrado.</div>
+            <div style="font-size: 0.95rem; color: var(--muted);">Os pacientes cadastrados aparecerão aqui.</div>
+        </div>
         {% endfor %}
     </div>
 </section>
@@ -84,8 +225,10 @@ document.querySelectorAll('.paciente-header').forEach(header => {
 });
 
 const searchInput = document.getElementById('search-medico');
+let searchTimeout;
 searchInput.addEventListener('input', function() {
-    setTimeout(() => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
         this.form.submit();
     }, 500);
 });

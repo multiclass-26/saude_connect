@@ -1,0 +1,272 @@
+/* DESIGN 4: DARK MODE - Moderno e elegante para ambientes escuros */
+:root {
+    --primary: #3B82F6;
+    --primary-dark: #2563EB;
+    --primary-light: #60A5FA;
+    --secondary: #8B5CF6;
+    --accent: #10B981;
+    --danger: #EF4444;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --bg-dark: #0F172A;
+    --bg-card: #1E293B;
+    --bg-hover: #334155;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --border-color: #334155;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.panel {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+}
+
+.panel:hover {
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.3);
+    border-color: var(--primary);
+}
+
+.primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 14px 28px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6);
+}
+
+h1, h2, h3 {
+    color: var(--text-primary);
+    font-weight: 800;
+}
+
+.brand h1 {
+    background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.paciente-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.paciente-card:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+}
+
+input, select {
+    background: var(--bg-dark);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 10px;
+}
+
+input::placeholder {
+    color: #94A3B8;
+    opacity: 0.8;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.15);
+    background: var(--bg-card);
+    outline: none;
+}
+
+input:disabled, select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #1a1f2e;
+}
+
+/* Melhor contraste para labels e textos */
+label {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Estados de erro mais visíveis */
+input.error, select.error {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
+
+.error-message {
+    color: #FCA5A5;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Loading states */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.toast.success {
+    background: linear-gradient(135deg, var(--accent), #059669);
+    border-left: 4px solid #10B981;
+}
+
+.toast.error {
+    background: linear-gradient(135deg, var(--danger), #DC2626);
+    border-left: 4px solid #EF4444;
+}
+
+.toast.info {
+    background: linear-gradient(135deg, var(--primary), #2563EB);
+    border-left: 4px solid #3B82F6;
+}
+
+/* Modal overlay melhorado */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Confirmação de delete melhorada */
+.delete-confirm {
+    padding: 2rem;
+}
+
+.delete-confirm h3 {
+    color: var(--danger);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.delete-confirm p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.delete-confirm .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Tabelas responsivas com melhor contraste */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+thead {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+thead th {
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--primary);
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s;
+}
+
+tbody tr:hover {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+tbody td {
+    padding: 1rem;
+    color: var(--text-secondary);
+}

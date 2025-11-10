@@ -5,7 +5,7 @@
 
 {% block content %}
 <section class="screen active">
-    <header class="brand">
+    <header class="brand" id="main-brand">
         <img src="{% static 'assets/logo.png' %}" alt="Logo Connect" class="logo">
         <div>
             <h1>SAÚDE CONECTADA</h1>
@@ -13,68 +13,136 @@
         </div>
     </header>
     
-    <nav class="login-block">
-        <button onclick="showLoginForm('agente')">Agente de Saúde</button>
-        <button onclick="showLoginForm('medico')">Médico</button>
-        <button onclick="showLoginForm('paciente')">Paciente</button>
-        <a href="{% url 'registro' %}" id="btn-register-home" style="text-align: center; text-decoration: none; width: 90%; max-width: 380px;">
-            <button style="width: 100%;">Registrar-se</button>
+    <!-- Botão Principal de Login -->
+    <div id="main-login-button" class="login-block" style="margin-top: 2rem;">
+        <button onclick="showUserTypes()" style="width: 90%; max-width: 420px; padding: 1.2rem 2rem; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 217, 181, 0.3); transition: all 0.3s ease; position: relative;">
+            Fazer Login
+        </button>
+        <a href="{% url 'registro' %}" style="text-align: center; text-decoration: none; width: 90%; max-width: 420px; margin-top: 1rem;">
+            <button style="width: 100%; padding: 1.2rem 2rem; border-radius: 14px; background: white; border: 2px solid var(--accent); color: var(--accent-dark); font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                Criar Conta
+            </button>
         </a>
+    </div>
+
+    <!-- Seleção de Tipo de Usuário -->
+    <nav class="login-block" id="user-type-selection" style="display: none;">
+        <h2 style="color: var(--accent-dark); margin-bottom: 1.5rem;">Selecione seu perfil</h2>
+        <button onclick="showLoginForm('agente')" style="width: 90%; max-width: 380px; padding: 1rem 1.5rem; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.05rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            Agente de Saúde
+        </button>
+        <button onclick="showLoginForm('medico')" style="width: 90%; max-width: 380px; padding: 1rem 1.5rem; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.05rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            Médico
+        </button>
+        <button onclick="showLoginForm('paciente')" style="width: 90%; max-width: 380px; padding: 1rem 1.5rem; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.05rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+            Paciente
+        </button>
+        <button onclick="hideUserTypes()" style="width: 90%; max-width: 380px; padding: 0.9rem 1.5rem; border-radius: 12px; background: white; border: 2px solid var(--accent); color: var(--accent-dark); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;">
+            Voltar
+        </button>
     </nav>
 
     <!-- Credenciais de Teste -->
-    <div class="credentials-panel panel" style="margin-top: 20px; max-width: 500px; margin-left: auto; margin-right: auto;">
-        <h3 style="margin-top: 0; font-size: 1.1rem; color: var(--accent-dark);">Credenciais de Teste</h3>
-        <div style="display: grid; gap: 12px; font-size: 0.9rem;">
-            <div style="background: #f9fafb; padding: 10px; border-radius: 8px; border-left: 3px solid var(--accent);">
-                <strong>Agente de Saúde:</strong><br>
-                ID: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">AG001</code> | 
-                Senha: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">123</code>
+    <div class="credentials-panel panel" id="credentials-panel" style="margin-top: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
+        <h3 style="margin-top: 0; font-size: 1.15rem; color: var(--accent-dark); text-align: center; margin-bottom: 1rem;">Credenciais de Teste</h3>
+        <div style="display: grid; gap: 14px; font-size: 0.95rem;">
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 12px; border-radius: 10px; border-left: 4px solid var(--accent); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
+                <strong style="color: var(--accent-dark);">Agente de Saúde:</strong><br>
+                <span style="color: var(--text-secondary);">ID: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">AG001</code> | 
+                Senha: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">123</code></span>
             </div>
-            <div style="background: #f9fafb; padding: 10px; border-radius: 8px; border-left: 3px solid var(--accent);">
-                <strong>Médico:</strong><br>
-                CRM: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">CRM12345</code> | 
-                Senha: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">123</code>
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 12px; border-radius: 10px; border-left: 4px solid #3b82f6; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
+                <strong style="color: #3b82f6;">Médico:</strong><br>
+                <span style="color: var(--text-secondary);">CRM: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">CRM12345</code> | 
+                Senha: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">123</code></span>
             </div>
-            <div style="background: #f9fafb; padding: 10px; border-radius: 8px; border-left: 3px solid var(--accent);">
-                <strong>Paciente:</strong><br>
-                CPF: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">111.222.333-44</code> | 
-                Senha: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">123</code>
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 12px; border-radius: 10px; border-left: 4px solid var(--success); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
+                <strong style="color: var(--success);">Paciente:</strong><br>
+                <span style="color: var(--text-secondary);">CPF: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">111.222.333-44</code> | 
+                Senha: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">123</code></span>
             </div>
         </div>
     </div>
 
+    <!-- Formulário de Login -->
     <div id="login-forms" style="display: none; margin-top: 20px;">
-        <form method="post" class="form panel">
+        <form method="post" class="form panel" style="max-width: 450px; margin: 0 auto; background: white; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);">
             {% csrf_token %}
             <input type="hidden" id="tipo-login" name="tipo" value="">
-            <h3 id="form-title"></h3>
-            <input type="text" id="identificador" name="identificador" placeholder="" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <button type="submit" class="primary">Entrar</button>
-            <button type="button" onclick="hideLoginForm()" class="back">← Voltar</button>
+            <h3 id="form-title" style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.4rem;"></h3>
+            <input type="text" id="identificador" name="identificador" placeholder="" required style="width: 100%; max-width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s;">
+            <input type="password" name="senha" placeholder="Senha" required style="width: 100%; max-width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s;">
+            <button type="submit" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; margin-top: 0.5rem;">
+                Entrar
+            </button>
+            <button type="button" onclick="hideLoginForm()" style="width: 100%; padding: 0.9rem; background: white; color: var(--accent-dark); border: 2px solid var(--accent); border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;">
+                Voltar
+            </button>
         </form>
     </div>
 </section>
 
+<style>
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 217, 181, 0.35) !important;
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+#main-login-button button:hover {
+    box-shadow: 0 8px 24px rgba(0, 217, 181, 0.4) !important;
+}
+
+input:focus {
+    border-color: var(--accent) !important;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(0, 217, 181, 0.15) !important;
+}
+</style>
+
 <script>
+function showUserTypes() {
+    const mainButton = document.getElementById('main-login-button');
+    const userTypeSelection = document.getElementById('user-type-selection');
+    const brand = document.getElementById('main-brand');
+    const credentials = document.getElementById('credentials-panel');
+    
+    mainButton.style.display = 'none';
+    userTypeSelection.style.display = 'flex';
+    brand.style.display = 'none';
+    if (credentials) credentials.style.display = 'none';
+}
+
+function hideUserTypes() {
+    const mainButton = document.getElementById('main-login-button');
+    const userTypeSelection = document.getElementById('user-type-selection');
+    const brand = document.getElementById('main-brand');
+    const credentials = document.getElementById('credentials-panel');
+    
+    mainButton.style.display = 'flex';
+    userTypeSelection.style.display = 'none';
+    brand.style.display = 'flex';
+    if (credentials) credentials.style.display = 'block';
+}
+
 function showLoginForm(tipo) {
     const loginForms = document.getElementById('login-forms');
-    const loginBlock = document.querySelector('.login-block');
-    const brand = document.querySelector('.brand');
-    const credentials = document.querySelector('.credentials-panel');
+    const userTypeSelection = document.getElementById('user-type-selection');
+    const credentials = document.getElementById('credentials-panel');
     
     loginForms.style.display = 'block';
-    loginBlock.style.display = 'none';
-    brand.style.display = 'none';
+    userTypeSelection.style.display = 'none';
     if (credentials) credentials.style.display = 'none';
     
     document.getElementById('tipo-login').value = tipo;
     
     const placeholders = {
-        'agente': 'Digite o ID do Agente',
-        'medico': 'Digite o CRM',
-        'paciente': 'Digite o CPF'
+        'agente': 'Digite o ID do Agente (ex: AG001)',
+        'medico': 'Digite o CRM (ex: CRM12345)',
+        'paciente': 'Digite o CPF (ex: 111.222.333-44)'
     };
     
     const titles = {
@@ -89,14 +157,12 @@ function showLoginForm(tipo) {
 
 function hideLoginForm() {
     const loginForms = document.getElementById('login-forms');
-    const loginBlock = document.querySelector('.login-block');
-    const brand = document.querySelector('.brand');
-    const credentials = document.querySelector('.credentials-panel');
+    const userTypeSelection = document.getElementById('user-type-selection');
+    const credentials = document.getElementById('credentials-panel');
     
     loginForms.style.display = 'none';
-    loginBlock.style.display = 'flex';
-    brand.style.display = 'flex';
-    if (credentials) credentials.style.display = 'block';
+    userTypeSelection.style.display = 'flex';
+    if (credentials) credentials.style.display = 'none';
 }
 </script>
 {% endblock %}

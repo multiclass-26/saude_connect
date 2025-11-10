@@ -4,17 +4,120 @@
 {% block body_class %}bg-paciente{% endblock %}
 
 {% block content %}
-<section class="screen active">
-    <a href="{% url 'logout' %}" class="back">← Sair</a>
-    <h2>Área do Paciente</h2>
-    
-    <div class="panel login-block">
-        <a href="{% url 'lembretes' %}" style="text-decoration: none; width: 90%; max-width: 360px;">
-            <button class="primary">Lembretes de Medicação</button>
-        </a>
-        <button class="primary">Movimente-se</button>
-        <button class="primary">Importância do Tratamento</button>
-        <button class="primary">Campanhas do Mês</button>
+<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-dark);">Minha Saúde</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Olá, {{ user.first_name }}! Cuide-se bem hoje.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'comunidade' %}" class="btn" style="background: var(--accent); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.2); transition: all 0.2s;">
+                Comunidade
+            </a>
+            <a href="{% url 'informacoes' %}" class="btn" style="background: white; border: 2px solid var(--accent); color: var(--accent-dark); text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; transition: all 0.2s;">
+                Informações
+            </a>
+            <a href="{% url 'logout' %}" class="btn" style="background: var(--danger); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2); transition: all 0.2s;">
+                Sair
+            </a>
+        </div>
     </div>
-</section>
+
+    <!-- Cards de Saúde -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <a href="{% url 'lembretes' %}" style="text-decoration: none;">
+            <div class="panel" style="background: white; border-left: 4px solid var(--accent); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer; height: 100%;">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent-light), var(--accent)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.3);">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="color: var(--accent-dark); margin-bottom: 0.5rem; font-size: 1.3rem; text-align: left;">Lembretes de Medicação</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; text-align: left;">Configure alarmes para não esquecer seus medicamentos</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <div class="panel" style="background: white; border-left: 4px solid var(--success); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #34d399, var(--success)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: var(--success); margin-bottom: 0.5rem; font-size: 1.3rem; text-align: left;">Movimente-se</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; text-align: left;">Exercícios e dicas para manter-se ativo e saudável</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" style="background: white; border-left: 4px solid #3b82f6; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #60a5fa, #3b82f6); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #3b82f6; margin-bottom: 0.5rem; font-size: 1.3rem; text-align: left;">Importância do Tratamento</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; text-align: left;">Entenda por que seguir seu tratamento é essencial</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" style="background: white; border-left: 4px solid #8b5cf6; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); transition: all 0.3s; cursor: pointer;">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #a78bfa, #8b5cf6); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #8b5cf6; margin-bottom: 0.5rem; font-size: 1.3rem; text-align: left;">Campanhas do Mês</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; text-align: left;">Fique por dentro das campanhas de saúde</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dicas de Saúde -->
+    <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.05), rgba(0, 217, 181, 0.1)); border-left: 4px solid var(--accent);">
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.3rem; text-align: left;">Dica do Dia</h3>
+        <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+            <p style="color: var(--text-secondary); line-height: 1.7; font-size: 1rem; text-align: justify;">
+                <strong style="color: var(--accent-dark);">Hidrate-se regularmente!</strong><br>
+                Beber água é fundamental para o bom funcionamento do seu organismo. Mantenha uma garrafa de água por perto e beba pequenos goles ao longo do dia. A hidratação adequada ajuda na absorção de medicamentos e melhora o funcionamento de todos os órgãos.
+            </p>
+        </div>
+    </div>
+
+    <!-- Lembretes Rápidos -->
+    <div class="panel" style="background: white;">
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.3rem; text-align: left;">Lembretes Importantes</h3>
+        <div style="display: grid; gap: 1rem;">
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent);">
+                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Tome seus medicamentos nos horários corretos</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Configure alarmes para não esquecer</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1rem; border-radius: 8px; border-left: 3px solid var(--success);">
+                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Não falte às suas consultas</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">O acompanhamento médico é essencial</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6;">
+                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Mantenha uma alimentação saudável</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Seu corpo agradece!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+</style>
 {% endblock %}

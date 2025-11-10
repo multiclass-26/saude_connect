@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block title %}Informações - Saúde Conectada{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Hero Section -->
+    <div style="text-align: center; margin-bottom: 3rem; padding: 3rem 1rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border-radius: 20px;">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+            🏥 Saúde Conectada
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 1.3rem; max-width: 800px; margin: 0 auto;">
+            Tecnologia a serviço da saúde pública brasileira
+        </p>
+    </div>
+
+    <!-- Sobre o Projeto -->
+    <div class="panel" style="margin-bottom: 3rem;">
+        <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--primary);">📋 Sobre o Projeto</h2>
+        <div style="color: var(--text-secondary); line-height: 1.8; font-size: 1.1rem;">
+            <p style="margin-bottom: 1rem;">
+                O <strong style="color: var(--text-primary);">Saúde Conectada</strong> é uma plataforma digital desenvolvida para modernizar e facilitar o trabalho dos profissionais da Atenção Básica em Saúde. Nossa missão é conectar agentes de saúde, médicos e pacientes através de uma solução tecnológica intuitiva e eficiente.
+            </p>
+            <p style="margin-bottom: 1rem;">
+                Desenvolvido com foco na realidade brasileira, o sistema oferece ferramentas práticas para cadastro de pacientes, gestão de prontuários, lembretes de medicação e acompanhamento contínuo da saúde comunitária.
+            </p>
+            <p>
+                Com uma interface moderna e acessível, buscamos democratizar o acesso à tecnologia na saúde, permitindo que profissionais possam dedicar mais tempo ao cuidado humano e menos às tarefas burocráticas.
+            </p>
+        </div>
+    </div>
+
+    <!-- Funcionalidades Principais -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">⚡ Principais Funcionalidades</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div class="panel" style="border-left: 4px solid var(--primary);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
+                <h3 style="color: var(--primary); margin-bottom: 0.75rem; font-size: 1.3rem;">Gestão de Pacientes</h3>
+                <p style="color: var(--text-secondary);">
+                    Cadastro completo com histórico médico, medicamentos, alergias e dados sociodemográficos para acompanhamento personalizado.
+                </p>
+            </div>
+
+            <div class="panel" style="border-left: 4px solid var(--accent);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">⏰</div>
+                <h3 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1.3rem;">Lembretes Inteligentes</h3>
+                <p style="color: var(--text-secondary);">
+                    Sistema de alarmes para medicação, consultas e procedimentos, ajudando pacientes a manter a adesão ao tratamento.
+                </p>
+            </div>
+
+            <div class="panel" style="border-left: 4px solid var(--secondary);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">📊</div>
+                <h3 style="color: var(--secondary); margin-bottom: 0.75rem; font-size: 1.3rem;">Dashboards Intuitivos</h3>
+                <p style="color: var(--text-secondary);">
+                    Visualização clara de dados e estatísticas para tomada de decisões baseada em informações organizadas.
+                </p>
+            </div>
+
+            <div class="panel" style="border-left: 4px solid #F59E0B;">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
+                <h3 style="color: #F59E0B; margin-bottom: 0.75rem; font-size: 1.3rem;">Segurança de Dados</h3>
+                <p style="color: var(--text-secondary);">
+                    Proteção total das informações sensíveis com criptografia e conformidade com LGPD (Lei Geral de Proteção de Dados).
+                </p>
+            </div>
+
+            <div class="panel" style="border-left: 4px solid #EC4899;">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">📱</div>
+                <h3 style="color: #EC4899; margin-bottom: 0.75rem; font-size: 1.3rem;">Multiplataforma</h3>
+                <p style="color: var(--text-secondary);">
+                    Acesse de qualquer dispositivo - computador, tablet ou celular. Interface responsiva e adaptável.
+                </p>
+            </div>
+
+            <div class="panel" style="border-left: 4px solid #14B8A6;">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">🌐</div>
+                <h3 style="color: #14B8A6; margin-bottom: 0.75rem; font-size: 1.3rem;">Comunidade Ativa</h3>
+                <p style="color: var(--text-secondary);">
+                    Rede colaborativa de profissionais compartilhando conhecimento e boas práticas em saúde comunitária.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tecnologias -->
+    <div class="panel" style="margin-bottom: 3rem;">
+        <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--primary);">🛠️ Tecnologias Utilizadas</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🐍</div>
+                <div style="color: var(--text-primary); font-weight: 500;">Python 3.11</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">Backend</div>
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
+                <div style="color: var(--text-primary); font-weight: 500;">Django 5.2.7</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">Framework Web</div>
+            </div>
+            <div style="background: rgba(139, 92, 246, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🗄️</div>
+                <div style="color: var(--text-primary); font-weight: 500;">PostgreSQL</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">Banco de Dados</div>
+            </div>
+            <div style="background: rgba(245, 158, 11, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎨</div>
+                <div style="color: var(--text-primary); font-weight: 500;">CSS3 Moderno</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">Interface</div>
+            </div>
+            <div style="background: rgba(236, 72, 153, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">☁️</div>
+                <div style="color: var(--text-primary); font-weight: 500;">Railway</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">Deploy</div>
+            </div>
+            <div style="background: rgba(20, 184, 166, 0.1); padding: 1rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔐</div>
+                <div style="color: var(--text-primary); font-weight: 500;">Django Auth</div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">Segurança</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefícios -->
+    <div style="margin-bottom: 3rem;">
+        <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">✨ Benefícios para Cada Perfil</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+            <!-- Agentes de Saúde -->
+            <div class="panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 50px; height: 50px; background: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        👤
+                    </div>
+                    <h3 style="color: var(--primary); font-size: 1.4rem;">Agentes de Saúde</h3>
+                </div>
+                <ul style="color: var(--text-secondary); line-height: 2; list-style: none; padding: 0;">
+                    <li>✓ Cadastro rápido de pacientes</li>
+                    <li>✓ Organização de visitas domiciliares</li>
+                    <li>✓ Histórico completo de atendimentos</li>
+                    <li>✓ Menos tempo com papelada</li>
+                </ul>
+            </div>
+
+            <!-- Médicos -->
+            <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.1));">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 50px; height: 50px; background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        ⚕️
+                    </div>
+                    <h3 style="color: var(--accent); font-size: 1.4rem;">Médicos</h3>
+                </div>
+                <ul style="color: var(--text-secondary); line-height: 2; list-style: none; padding: 0;">
+                    <li>✓ Acesso a prontuários detalhados</li>
+                    <li>✓ Visualização de todos os pacientes</li>
+                    <li>✓ Busca rápida por CPF ou nome</li>
+                    <li>✓ Decisões baseadas em dados</li>
+                </ul>
+            </div>
+
+            <!-- Pacientes -->
+            <div class="panel" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.1));">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 50px; height: 50px; background: var(--secondary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        ❤️
+                    </div>
+                    <h3 style="color: var(--secondary); font-size: 1.4rem;">Pacientes</h3>
+                </div>
+                <ul style="color: var(--text-secondary); line-height: 2; list-style: none; padding: 0;">
+                    <li>✓ Lembretes automáticos de medicação</li>
+                    <li>✓ Não esquecer nenhum remédio</li>
+                    <li>✓ Interface simples e intuitiva</li>
+                    <li>✓ Melhor adesão ao tratamento</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="panel" style="margin-bottom: 3rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));">
+        <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--primary);">🚀 Próximas Funcionalidades</h2>
+        <div style="display: grid; gap: 1rem;">
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="min-width: 30px; height: 30px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">1</div>
+                <div>
+                    <div style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">Aplicativo Mobile Nativo</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Apps para Android e iOS com notificações push</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="min-width: 30px; height: 30px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">2</div>
+                <div>
+                    <div style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">Telemedicina Integrada</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Consultas online por vídeo dentro da plataforma</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="min-width: 30px; height: 30px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">3</div>
+                <div>
+                    <div style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">Relatórios Avançados</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Análises e gráficos detalhados de indicadores de saúde</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: start;">
+                <div style="min-width: 30px; height: 30px; background: #F59E0B; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">4</div>
+                <div>
+                    <div style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">Integração com e-SUS</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Sincronização automática com sistema do Ministério da Saúde</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contato -->
+    <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); border: 2px solid var(--primary);">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;">📬 Entre em Contato</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Tem dúvidas, sugestões ou quer saber mais sobre o projeto? Estamos à disposição!
+        </p>
+        <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">Email</div>
+                <div style="color: var(--primary); font-weight: 500;">contato@saudeconectada.com.br</div>
+            </div>
+            <div>
+                <div style="color: var(--text-secondary); font-size: 0.875rem;">WhatsApp</div>
+                <div style="color: var(--primary); font-weight: 500;">(11) 98765-4321</div>
+            </div>
+        </div>
+        <button class="btn" style="background: var(--primary); padding: 1rem 2rem; font-size: 1.1rem;">
+            Enviar Mensagem
+        </button>
+    </div>
+</div>
+{% endblock %}

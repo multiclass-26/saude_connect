@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Comunidade - Saúde Conectada{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Header da Página -->
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+            💙 Comunidade Saúde Conectada
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
+            Conectando profissionais da saúde, agentes comunitários e pacientes em uma rede colaborativa
+        </p>
+    </div>
+
+    <!-- Estatísticas da Comunidade -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border: 1px solid var(--primary);">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">👥</div>
+            <div style="font-size: 2rem; font-weight: bold; color: var(--primary); margin-bottom: 0.5rem;">1.284</div>
+            <div style="color: var(--text-secondary);">Membros Ativos</div>
+        </div>
+        <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1)); border: 1px solid var(--accent);">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏥</div>
+            <div style="font-size: 2rem; font-weight: bold; color: var(--accent); margin-bottom: 0.5rem;">247</div>
+            <div style="color: var(--text-secondary);">Profissionais de Saúde</div>
+        </div>
+        <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.1)); border: 1px solid var(--secondary);">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">💬</div>
+            <div style="font-size: 2rem; font-weight: bold; color: var(--secondary); margin-bottom: 0.5rem;">5.632</div>
+            <div style="color: var(--text-secondary);">Interações Mensais</div>
+        </div>
+    </div>
+
+    <!-- Seções de Recursos -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <!-- Fórum -->
+        <div class="panel">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;">💭</div>
+                <h2 style="font-size: 1.5rem; color: var(--primary);">Fórum de Discussões</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Troque experiências e tire dúvidas com outros profissionais da saúde e membros da comunidade.
+            </p>
+            <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+                <div style="color: var(--text-primary); font-weight: 500;">📌 Tópico em Destaque</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                    "Melhores práticas no acompanhamento de pacientes com diabetes"
+                </div>
+            </div>
+            <button class="btn" style="width: 100%;">Acessar Fórum</button>
+        </div>
+
+        <!-- Eventos -->
+        <div class="panel">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;">📅</div>
+                <h2 style="font-size: 1.5rem; color: var(--accent);">Eventos e Webinars</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Participe de eventos online gratuitos sobre saúde comunitária, tecnologia e bem-estar.
+            </p>
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+                <div style="color: var(--text-primary); font-weight: 500;">🎯 Próximo Evento</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                    "Tecnologia na Atenção Básica" - 15/11 às 19h
+                </div>
+            </div>
+            <button class="btn" style="width: 100%;">Ver Agenda</button>
+        </div>
+
+        <!-- Biblioteca -->
+        <div class="panel">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;">📚</div>
+                <h2 style="font-size: 1.5rem; color: var(--secondary);">Biblioteca de Recursos</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Acesse artigos, guias práticos e materiais educativos sobre saúde pública e gestão.
+            </p>
+            <div style="background: rgba(139, 92, 246, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+                <div style="color: var(--text-primary); font-weight: 500;">📖 Mais Acessado</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                    "Guia Completo de Medicamentos para ACS"
+                </div>
+            </div>
+            <button class="btn" style="width: 100%;">Explorar Biblioteca</button>
+        </div>
+    </div>
+
+    <!-- Depoimentos -->
+    <div class="panel" style="margin-bottom: 3rem;">
+        <h2 style="font-size: 1.8rem; margin-bottom: 2rem; text-align: center;">💬 O que nossa comunidade diz</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div style="background: rgba(59, 130, 246, 0.05); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+                <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1rem;">
+                    "O Saúde Conectada revolucionou meu trabalho. Consigo acompanhar meus pacientes com muito mais eficiência!"
+                </p>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        AM
+                    </div>
+                    <div>
+                        <div style="color: var(--text-primary); font-weight: 500;">Ana Maria Silva</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Agente de Saúde</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(16, 185, 129, 0.05); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent);">
+                <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1rem;">
+                    "Plataforma intuitiva e prática. Facilitou demais o gerenciamento dos lembretes de medicação."
+                </p>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        JS
+                    </div>
+                    <div>
+                        <div style="color: var(--text-primary); font-weight: 500;">João Santos</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Paciente</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--secondary);">
+                <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1rem;">
+                    "Excelente ferramenta para acompanhamento. A comunidade é engajada e sempre pronta para ajudar."
+                </p>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        CP
+                    </div>
+                    <div>
+                        <div style="color: var(--text-primary); font-weight: 500;">Dr. Carlos Pereira</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Médico</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); border: 2px solid var(--primary);">
+        <h2 style="font-size: 2rem; margin-bottom: 1rem;">Junte-se à Nossa Comunidade!</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Faça parte de uma rede que está transformando a saúde pública no Brasil. Compartilhe conhecimento, aprenda e contribua!
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button class="btn" style="background: var(--primary); padding: 1rem 2rem; font-size: 1.1rem;">
+                Criar Conta Gratuita
+            </button>
+            <button class="btn" style="background: transparent; border: 2px solid var(--primary); padding: 1rem 2rem; font-size: 1.1rem;">
+                Saber Mais
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

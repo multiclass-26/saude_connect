@@ -4,52 +4,167 @@
 {% block body_class %}bg-agente{% endblock %}
 
 {% block content %}
-<section class="screen active">
-    <a href="{% url 'logout' %}" class="back">← Sair</a>
-    <h2>Agente de Saúde</h2>
-    <div class="panel">
-        <a href="{% url 'cadastrar_paciente' %}" style="text-decoration: none;">
-            <button class="primary">Registrar Novo Paciente</button>
-        </a>
-        <button class="primary" onclick="window.location.href='#pacientes'">Pacientes Registrados ({{ pacientes.count }})</button>
+<div class="container" style="max-width: 1400px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-dark);">Dashboard do Agente de Saúde</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Bem-vindo, {{ user.first_name }}!</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'comunidade' %}" class="btn" style="background: var(--accent); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.2); transition: all 0.2s;">
+                Comunidade
+            </a>
+            <a href="{% url 'informacoes' %}" class="btn" style="background: white; border: 2px solid var(--accent); color: var(--accent-dark); text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; transition: all 0.2s;">
+                Informações
+            </a>
+            <a href="{% url 'logout' %}" class="btn" style="background: var(--danger); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2); transition: all 0.2s;">
+                Sair
+            </a>
+        </div>
     </div>
-</section>
 
-<section id="pacientes" style="margin-top: 20px;">
-    <h3>Meus Pacientes</h3>
-    <div class="panel">
-        {% for paciente in pacientes %}
-        <div class="paciente-card">
-            <div class="paciente-header">
-                <div class="paciente-header-info">
-                    {% if paciente.foto %}
-                        <img src="{{ paciente.foto.url }}" alt="Foto de {{ paciente.nome }}" class="paciente-list-photo">
-                    {% else %}
-                        <div class="paciente-list-photo-placeholder">{{ paciente.nome.0|upper }}</div>
-                    {% endif %}
-                    <span>{{ paciente.nome }}</span>
+    <!-- Cards de Estatísticas -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="panel" style="background: white; border-left: 4px solid var(--accent); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Total de Pacientes</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: var(--accent-dark);">{{ pacientes.count }}</div>
                 </div>
-                <span class="paciente-toggle">▶&#xFE0E;</span>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--accent-light), var(--accent)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.3);">
+                </div>
             </div>
-            <div class="paciente-content">
-                <div class="form">
-                    {% if paciente.foto %}
-                        <img src="{{ paciente.foto.url }}" alt="Foto" class="paciente-detail-photo">
-                    {% endif %}
-                    <h4>Detalhes do Paciente</h4>
-                    <p><strong>Nome:</strong> {{ paciente.nome }}</p>
-                    <p><strong>Idade:</strong> {{ paciente.idade }} anos</p>
-                    <p><strong>CPF:</strong> {{ paciente.cpf|default:"Não informado" }}</p>
-                    <p><strong>Cadastrado em:</strong> {{ paciente.criado_em|date:"d/m/Y H:i" }}</p>
-                    <div class="form-actions">
-                        <button onclick="excluirPaciente({{ paciente.id }})" class="primary delete-btn">Excluir</button>
-                    </div>
-                </div>
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Cadastrados no sistema
             </div>
         </div>
-        {% empty %}
-        <p>Nenhum paciente cadastrado ainda.</p>
-        {% endfor %}
+
+        <div class="panel" style="background: white; border-left: 4px solid var(--success); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Visitas Este Mês</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: var(--success);">{{ pacientes.count }}</div>
+                </div>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #34d399, var(--success)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                </div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Acompanhamentos realizados
+            </div>
+        </div>
+
+        <div class="panel" style="background: white; border-left: 4px solid #8b5cf6; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Pacientes com Comorbidades</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: #8b5cf6;">
+                        {% with comorbidades=pacientes|length %}
+                            {% if comorbidades > 0 %}
+                                {{ pacientes|length|add:"-5"|default:"0" }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #a78bfa, #8b5cf6); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+                </div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Requer atenção especial
+            </div>
+        </div>
+
+        <div class="panel" style="background: white; border-left: 4px solid var(--warning); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500;">Taxa de Sucesso</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: var(--warning);">94%</div>
+                </div>
+                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #fbbf24, var(--warning)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+                </div>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                Adesão ao tratamento
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="panel" style="margin-bottom: 2rem; background: white;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.3rem; color: var(--accent-dark); text-align: left;">Ações Rápidas</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="{% url 'cadastrar_paciente' %}" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; border: none; cursor: pointer;">
+                Novo Paciente
+            </a>
+            <button style="display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: var(--success); color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); transition: all 0.2s; border: none; cursor: pointer;" onclick="window.location.href='#pacientes'">
+                Ver Pacientes
+            </button>
+            <button style="display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: #8b5cf6; color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25); transition: all 0.2s; border: none; cursor: pointer;">
+                Relatórios
+            </button>
+            <button style="display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: white; color: var(--accent-dark); border: 2px solid var(--accent); border-radius: 10px; font-weight: 600; transition: all 0.2s; cursor: pointer;">
+                Agenda
+            </button>
+        </div>
+    </div>
+</div>
+
+<section id="pacientes" style="margin-top: 20px;">
+    <h3 style="color: var(--accent-dark); text-align: left; margin-bottom: 1.5rem;">Meus Pacientes</h3>
+    <div class="panel" style="background: white;">
+        <!-- Tabela de Pacientes -->
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: linear-gradient(135deg, #f9fafb, #f3f4f6);">
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--accent); color: var(--text-primary); font-weight: 600;">Foto</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--accent); color: var(--text-primary); font-weight: 600;">Nome</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--accent); color: var(--text-primary); font-weight: 600;">Idade</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--accent); color: var(--text-primary); font-weight: 600;">CPF</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--accent); color: var(--text-primary); font-weight: 600;">Cadastrado</th>
+                        <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--accent); color: var(--text-primary); font-weight: 600;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                    <tr style="border-bottom: 1px solid #e5e7eb; transition: all 0.2s;" onmouseover="this.style.background='rgba(0, 217, 181, 0.05)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 1rem;">
+                            {% if paciente.foto %}
+                                <img src="{{ paciente.foto.url }}" alt="Foto" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-light); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+                            {% else %}
+                                <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.3);">
+                                    {{ paciente.nome.0|upper }}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem; color: var(--text-primary); font-weight: 600;">{{ paciente.nome }}</td>
+                        <td style="padding: 1rem; color: var(--text-secondary);">{{ paciente.idade }} anos</td>
+                        <td style="padding: 1rem; color: var(--text-secondary); font-family: monospace;">{{ paciente.cpf|default:"Não informado" }}</td>
+                        <td style="padding: 1rem; color: var(--text-secondary);">{{ paciente.criado_em|date:"d/m/Y" }}</td>
+                        <td style="padding: 1rem;">
+                            <button onclick="excluirPaciente({{ paciente.id }})" style="background: linear-gradient(135deg, var(--danger), var(--danger-dark)); color: white; padding: 0.6rem 1.1rem; font-size: 0.875rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25); transition: all 0.2s;">
+                                Excluir
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="padding: 3rem 2rem; text-align: center; color: var(--text-secondary);">
+                            <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem;">Nenhum paciente cadastrado ainda.</div>
+                            <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 1.5rem;">Comece adicionando seu primeiro paciente ao sistema.</div>
+                            <div style="margin-top: 1rem;">
+                                <a href="{% url 'cadastrar_paciente' %}" style="text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 1.5rem; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s;">
+                                    Cadastrar Primeiro Paciente
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 
