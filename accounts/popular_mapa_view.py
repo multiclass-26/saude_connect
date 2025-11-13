@@ -235,7 +235,7 @@ def popular_mapa_view(request):
             html += "<div class='stats'>"
             html += f"<div class='stat-box'><h3>📍 {residencias_criadas}</h3><p>Residências</p></div>"
             html += f"<div class='stat-box'><h3>👥 {pacientes_criados}</h3><p>Pacientes</p></div>"
-            html += f"<div class='stat-box'><h3>🏥 {agentes.count()}</h3><p>Agentes</p></div>"
+            html += f"<div class='stat-box'><h3>🏥 {len(agentes)}</h3><p>Agentes</p></div>"
             html += "</div>"
             
             # Estatísticas por agente
