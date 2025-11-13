@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}
+{% if user.tipo == 'AGENTE' %}bg-agente
+{% elif user.tipo == 'MEDICO' %}bg-medico
+{% elif user.tipo == 'PACIENTE' %}bg-paciente
+{% else %}bg-login{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <a href="javascript:history.back()" class="back" style="display: inline-block; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 10px; font-weight: 600;">← Voltar</a>
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-dark);">Meu Perfil</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">
+                {% if user.tipo == 'MEDICO' %}Médico(a)
+                {% elif user.tipo == 'AGENTE' %}Agente de Saúde
+                {% elif user.tipo == 'PACIENTE' %}Paciente
+                {% endif %}
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'logout' %}" class="btn" style="background: var(--danger); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2); transition: all 0.2s;">
+                Sair
+            </a>
+        </div>
+    </div>
+
+    <!-- Card do Perfil -->
+    <div class="panel" style="background: white; margin-bottom: 2rem;">
+        <!-- Avatar e Info Principal -->
+        <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; font-weight: bold; box-shadow: 0 4px 16px rgba(0, 217, 181, 0.3);">
+                {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+            </div>
+            <div style="flex: 1;">
+                <h2 style="font-size: 1.8rem; color: var(--text-primary); margin-bottom: 0.5rem; text-align: left;">{{ user.first_name }} {{ user.last_name }}</h2>
+                <p style="color: var(--text-secondary); font-size: 1rem; margin-bottom: 0.5rem; text-align: left;">
+                    <strong>Email:</strong> {{ user.email }}
+                </p>
+                <p style="color: var(--text-secondary); font-size: 1rem; text-align: left;">
+                    <strong>CPF:</strong> {{ user.cpf }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Informações Específicas por Tipo -->
+        {% if user.tipo == 'MEDICO' %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                <h4 style="color: var(--accent-dark); margin-bottom: 1rem; text-align: left;">🏥 Informações Profissionais</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>CRM:</strong> {{ crm }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Especialidade:</strong> {{ especialidade }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Tempo de Atuação:</strong> {{ tempo_atuacao }}</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid #3b82f6;">
+                <h4 style="color: #3b82f6; margin-bottom: 1rem; text-align: left;">🎓 Formação</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;">{{ formacao }}</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--success);">
+                <h4 style="color: var(--success); margin-bottom: 1rem; text-align: left;">📞 Contato</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Telefone:</strong> {{ telefone }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Endereço:</strong> {{ user.endereco }}</p>
+            </div>
+        </div>
+        {% elif user.tipo == 'AGENTE' %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                <h4 style="color: var(--accent-dark); margin-bottom: 1rem; text-align: left;">👤 Identificação</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>ID do Agente:</strong> {{ id_agente }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Tempo de Serviço:</strong> {{ tempo_servico }}</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid #3b82f6;">
+                <h4 style="color: #3b82f6; margin-bottom: 1rem; text-align: left;">🗺️ Área de Atuação</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;">{{ area_atuacao }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Famílias:</strong> {{ familias_atendidas }} famílias atendidas</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--success);">
+                <h4 style="color: var(--success); margin-bottom: 1rem; text-align: left;">📞 Contato</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Telefone:</strong> {{ telefone }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Endereço:</strong> {{ user.endereco }}</p>
+            </div>
+        </div>
+        {% elif user.tipo == 'PACIENTE' %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--accent);">
+                <h4 style="color: var(--accent-dark); margin-bottom: 1rem; text-align: left;">📋 Dados Pessoais</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Data de Nascimento:</strong> {{ data_nascimento }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Idade:</strong> {{ idade }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Tipo Sanguíneo:</strong> {{ tipo_sanguineo }}</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--warning);">
+                <h4 style="color: var(--warning); margin-bottom: 1rem; text-align: left;">⚕️ Informações Médicas</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Alergias:</strong> {{ alergias }}</p>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1.25rem; border-radius: 10px; border-left: 4px solid var(--success);">
+                <h4 style="color: var(--success); margin-bottom: 1rem; text-align: left;">📞 Contato</h4>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Telefone:</strong> {{ telefone }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Emergência:</strong> {{ contato_emergencia }}</p>
+                <p style="color: var(--text-secondary); margin: 0.5rem 0; text-align: left;"><strong>Endereço:</strong> {{ user.endereco }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.05), rgba(0, 217, 181, 0.1)); border-left: 4px solid var(--accent);">
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; text-align: left;">⚡ Ações Rápidas</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="{% url 'dashboard' %}" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s;">
+                🏠 Dashboard
+            </a>
+            <a href="{% url 'mapa' %}" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: var(--success); color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); transition: all 0.2s;">
+                🗺️ Mapa
+            </a>
+            <a href="{% url 'comunidade' %}" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: #3b82f6; color: white; border-radius: 10px; font-weight: 600; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); transition: all 0.2s;">
+                💬 Comunidade
+            </a>
+            <a href="{% url 'informacoes' %}" style="text-decoration: none; display: flex; align-items: center; gap: 0.5rem; justify-content: center; padding: 1rem; background: white; color: var(--accent-dark); border: 2px solid var(--accent); border-radius: 10px; font-weight: 600; transition: all 0.2s;">
+                ℹ️ Informações
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+a[href]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 217, 181, 0.35) !important;
+}
+</style>
+{% endblock %}

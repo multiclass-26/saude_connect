@@ -12,6 +12,12 @@
             <p style="color: var(--text-secondary); font-size: 1.1rem;">Olá, {{ user.first_name }}! Cuide-se bem hoje.</p>
         </div>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'perfil' %}" class="btn" style="background: white; border: 2px solid var(--accent); color: var(--accent-dark); text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; transition: all 0.2s;">
+                👤 Perfil
+            </a>
+            <a href="{% url 'mapa' %}" class="btn" style="background: var(--success); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2); transition: all 0.2s;">
+                🗺️ Mapa
+            </a>
             <a href="{% url 'comunidade' %}" class="btn" style="background: var(--accent); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.2); transition: all 0.2s;">
                 Comunidade
             </a>
@@ -83,9 +89,9 @@
 
     <!-- Dicas de Saúde -->
     <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.05), rgba(0, 217, 181, 0.1)); border-left: 4px solid var(--accent);">
-        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.3rem; text-align: left;">Dica do Dia</h3>
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.3rem; text-align: left;">💡 Dica do Dia</h3>
         <div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
-            <p style="color: var(--text-secondary); line-height: 1.7; font-size: 1rem; text-align: justify;">
+            <p style="color: var(--text-secondary); line-height: 1.7; font-size: 1rem; text-align: left;">
                 <strong style="color: var(--accent-dark);">Hidrate-se regularmente!</strong><br>
                 Beber água é fundamental para o bom funcionamento do seu organismo. Mantenha uma garrafa de água por perto e beba pequenos goles ao longo do dia. A hidratação adequada ajuda na absorção de medicamentos e melhora o funcionamento de todos os órgãos.
             </p>
@@ -94,21 +100,21 @@
 
     <!-- Lembretes Rápidos -->
     <div class="panel" style="background: white;">
-        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.3rem; text-align: left;">Lembretes Importantes</h3>
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.3rem; text-align: left;">📋 Lembretes Importantes</h3>
         <div style="display: grid; gap: 1rem;">
             <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent);">
-                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Tome seus medicamentos nos horários corretos</p>
-                <p style="color: var(--text-secondary); font-size: 0.9rem;">Configure alarmes para não esquecer</p>
+                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem; text-align: left;">Tome seus medicamentos nos horários corretos</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: left;">Configure alarmes para não esquecer</p>
             </div>
             
             <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1rem; border-radius: 8px; border-left: 3px solid var(--success);">
-                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Não falte às suas consultas</p>
-                <p style="color: var(--text-secondary); font-size: 0.9rem;">O acompanhamento médico é essencial</p>
+                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem; text-align: left;">Não falte às suas consultas</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: left;">O acompanhamento médico é essencial</p>
             </div>
             
             <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6;">
-                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Mantenha uma alimentação saudável</p>
-                <p style="color: var(--text-secondary); font-size: 0.9rem;">Seu corpo agradece!</p>
+                <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem; text-align: left;">Mantenha uma alimentação saudável</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: left;">Seu corpo agradece!</p>
             </div>
         </div>
     </div>

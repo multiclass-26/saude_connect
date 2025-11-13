@@ -33,6 +33,8 @@ def login_view(request):
             
             if user is not None:
                 login(request, user)
+                # Manter sessão ativa por 30 dias
+                request.session.set_expiry(2592000)  # 30 dias em segundos
                 messages.success(request, 'Login bem-sucedido!')
                 return redirect('dashboard')
             else:
@@ -99,7 +101,64 @@ def logout_view(request):
     return redirect('login')
 
 def comunidade_view(request):
+    # Página pública - não requer login
     return render(request, 'comunidade.html')
 
 def informacoes_view(request):
+    # Página pública - não requer login
     return render(request, 'informacoes.html')
+
+@login_required
+def perfil_view(request):
+    user = request.user
+    
+    # Dados fictícios baseados no tipo de usuário
+    context = {
+        'user': user,
+    }
+    
+    if user.tipo == 'MEDICO':
+        try:
+            medico = Medico.objects.get(usuario=user)
+            context.update({
+                'crm': medico.crm,
+                'especialidade': 'Clínica Geral',
+                'tempo_atuacao': '15 anos',
+                'formacao': 'Universidade Federal de São Paulo (UNIFESP)',
+                'telefone': '(11) 98765-4321',
+            })
+        except Medico.DoesNotExist:
+            pass
+    
+    elif user.tipo == 'AGENTE':
+        try:
+            agente = AgenteSaude.objects.get(usuario=user)
+            context.update({
+                'id_agente': agente.id_agente,
+                'area_atuacao': 'Centro - Zona Norte',
+                'tempo_servico': '8 anos',
+                'familias_atendidas': 45,
+                'telefone': '(11) 98765-1234',
+            })
+        except AgenteSaude.DoesNotExist:
+            pass
+    
+    elif user.tipo == 'PACIENTE':
+        context.update({
+            'data_nascimento': '15/03/1985',
+            'idade': '40 anos',
+            'tipo_sanguineo': 'O+',
+            'alergias': 'Nenhuma alergia conhecida',
+            'telefone': '(11) 98765-5678',
+            'contato_emergencia': '(11) 98765-8765',
+        })
+    
+    return render(request, 'perfil.html', context)
+
+@login_required
+def mapa_view(request):
+    user = request.user
+    context = {
+        'user': user,
+    }
+    return render(request, 'mapa.html', context)

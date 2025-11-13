@@ -12,6 +12,12 @@
             <p style="color: var(--text-secondary); font-size: 1.1rem;">Bem-vindo, {{ user.first_name }}!</p>
         </div>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'perfil' %}" class="btn" style="background: white; border: 2px solid var(--accent); color: var(--accent-dark); text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; transition: all 0.2s;">
+                👤 Perfil
+            </a>
+            <a href="{% url 'mapa' %}" class="btn" style="background: var(--success); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2); transition: all 0.2s;">
+                🗺️ Mapa
+            </a>
             <a href="{% url 'comunidade' %}" class="btn" style="background: var(--accent); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.2); transition: all 0.2s;">
                 Comunidade
             </a>

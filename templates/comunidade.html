@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Comunidade - Saúde Conectada{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Botão Voltar -->
+    <a href="javascript:history.back()" class="back" style="display: inline-block; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 15px; font-weight: 600;">← Voltar</a>
+    
     <!-- Header da Página -->
     <div style="text-align: center; margin-bottom: 3rem;">
         <h1 style="font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
@@ -35,6 +39,178 @@
 
     <!-- Seções de Recursos -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <!-- Seção de Exercícios Físicos -->
+        <div class="panel" style="grid-column: 1 / -1;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;">🏃‍♂️</div>
+                <h2 style="font-size: 1.5rem; color: #10b981; text-align: left; margin: 0;">Exercícios Físicos</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: left;">
+                Aprenda exercícios práticos para melhorar sua saúde e bem-estar físico.
+            </p>
+            
+            <!-- Grid de Vídeos de Exercícios -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <!-- Exercício 1 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/exercicio1.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #10b981; margin-bottom: 0.5rem;">Exercício 1</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Atividades para fortalecer o corpo</p>
+                    </div>
+                </div>
+
+                <!-- Exercício 2 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/exercicio2.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #10b981; margin-bottom: 0.5rem;">Exercício 2</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Alongamentos e flexibilidade</p>
+                    </div>
+                </div>
+
+                <!-- Exercício 3 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/exercicio3.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #10b981; margin-bottom: 0.5rem;">Exercício 3</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Exercícios cardiovasculares</p>
+                    </div>
+                </div>
+
+                <!-- Exercício 4 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/exercicio4.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #10b981; margin-bottom: 0.5rem;">Exercício 4</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Fortalecimento muscular</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Anúncios Públicos -->
+        <div class="panel" style="grid-column: 1 / -1;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;">📢</div>
+                <h2 style="font-size: 1.5rem; color: #f59e0b; text-align: left; margin: 0;">Anúncios Públicos</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: left;">
+                Informações importantes sobre saúde pública, campanhas e avisos da comunidade.
+            </p>
+            
+            <!-- Grid de Vídeos de Anúncios -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <!-- Anúncio 1 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/anuncio1.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #f59e0b; margin-bottom: 0.5rem;">Anúncio 1</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Campanha de prevenção</p>
+                    </div>
+                </div>
+
+                <!-- Anúncio 2 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/anuncio2.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #f59e0b; margin-bottom: 0.5rem;">Anúncio 2</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Informações de saúde pública</p>
+                    </div>
+                </div>
+
+                <!-- Anúncio 3 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/anuncio3.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #f59e0b; margin-bottom: 0.5rem;">Anúncio 3</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Avisos importantes</p>
+                    </div>
+                </div>
+
+                <!-- Anúncio 4 -->
+                <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;">
+                    <div class="video-container" style="background: #000;">
+                        <video 
+                            controls 
+                            controlsList="nodownload"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                            preload="metadata">
+                            <source src="{% static 'videos/anuncio4.mp4' %}" type="video/mp4">
+                            Seu navegador não suporta a reprodução de vídeos.
+                        </video>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="color: #f59e0b; margin-bottom: 0.5rem;">Anúncio 4</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Comunicados oficiais</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Fórum -->
         <div class="panel">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
@@ -90,57 +266,6 @@
         </div>
     </div>
 
-    <!-- Depoimentos -->
-    <div class="panel" style="margin-bottom: 3rem;">
-        <h2 style="font-size: 1.8rem; margin-bottom: 2rem; text-align: center;">💬 O que nossa comunidade diz</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-            <div style="background: rgba(59, 130, 246, 0.05); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
-                <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1rem;">
-                    "O Saúde Conectada revolucionou meu trabalho. Consigo acompanhar meus pacientes com muito mais eficiência!"
-                </p>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                        AM
-                    </div>
-                    <div>
-                        <div style="color: var(--text-primary); font-weight: 500;">Ana Maria Silva</div>
-                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Agente de Saúde</div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: rgba(16, 185, 129, 0.05); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--accent);">
-                <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1rem;">
-                    "Plataforma intuitiva e prática. Facilitou demais o gerenciamento dos lembretes de medicação."
-                </p>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                        JS
-                    </div>
-                    <div>
-                        <div style="color: var(--text-primary); font-weight: 500;">João Santos</div>
-                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Paciente</div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: rgba(139, 92, 246, 0.05); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--secondary);">
-                <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1rem;">
-                    "Excelente ferramenta para acompanhamento. A comunidade é engajada e sempre pronta para ajudar."
-                </p>
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
-                        CP
-                    </div>
-                    <div>
-                        <div style="color: var(--text-primary); font-weight: 500;">Dr. Carlos Pereira</div>
-                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Médico</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Call to Action -->
     <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); border: 2px solid var(--primary);">
         <h2 style="font-size: 2rem; margin-bottom: 1rem;">Junte-se à Nossa Comunidade!</h2>
@@ -157,4 +282,40 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Estilos dos Vídeos */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    background: #000;
+    border-radius: 8px;
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    object-fit: contain;
+}
+
+/* Efeito hover nos cards de vídeo */
+.panel > div > div:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .panel > div {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
+
 {% endblock %}
