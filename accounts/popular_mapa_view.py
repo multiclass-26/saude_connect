@@ -169,10 +169,10 @@ def popular_mapa_view(request):
                             
                             # Dados clínicos
                             tem_doenca = random.random() < 0.7  # 70% tem doença crônica
-                            gravidade = random.choice(['Leve', 'Moderada', 'Grave'])
+                            gravidade = random.choice(['LEVE', 'MODERADA', 'GRAVE'])
                             tipo_sang = random.choice(tipos_sanguineos)
                             
-                            doenca_atual = random.choice(doencas) if tem_doenca else None
+                            doenca_atual = random.choice(doencas) if tem_doenca else ''
                             contagiosa = random.random() < 0.1
                             
                             # Medicamentos
