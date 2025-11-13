@@ -37,6 +37,8 @@ class Medico(models.Model):
 class AgenteSaude(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='agente')
     id_agente = models.CharField('ID do Agente', max_length=20, unique=True)
+    area_nome = models.CharField('Nome da Área', max_length=100, blank=True)
+    area_coordenadas = models.JSONField('Coordenadas da Área (polígono)', blank=True, null=True, help_text='Lista de coordenadas [lat, lng]')
     
     class Meta:
         verbose_name = 'Agente de Saúde'

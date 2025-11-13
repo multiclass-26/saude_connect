@@ -30,9 +30,9 @@ with transaction.atomic():
         print("✓ Admin criado")
 
     # Médico
-    if not Usuario.objects.filter(username='12345678900').exists():
+    if not Usuario.objects.filter(username='medico').exists():
         medico_user = Usuario.objects.create_user(
-            username='12345678900',
+            username='medico',
             email='medico@saude.com',
             password='123',
             first_name='Carlos',
@@ -45,9 +45,9 @@ with transaction.atomic():
         print("✓ Médico criado")
 
     # Agente
-    if not Usuario.objects.filter(username='98765432100').exists():
+    if not Usuario.objects.filter(username='agente').exists():
         agente_user = Usuario.objects.create_user(
-            username='98765432100',
+            username='agente',
             email='agente@saude.com',
             password='123',
             first_name='Maria',
@@ -60,9 +60,9 @@ with transaction.atomic():
         print("✓ Agente criado")
 
     # Paciente
-    if not Usuario.objects.filter(username='11122233344').exists():
+    if not Usuario.objects.filter(username='paciente').exists():
         Usuario.objects.create_user(
-            username='11122233344',
+            username='paciente',
             email='paciente@email.com',
             password='123',
             first_name='Joao',

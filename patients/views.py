@@ -2,9 +2,180 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
-from .models import Paciente
+from .models import Paciente, Residencia
 from accounts.models import AgenteSaude
 from django.http import JsonResponse
+
+
+@login_required
+def mapa_dados_agente(request):
+    """API endpoint para dados do mapa - visão do agente"""
+    if request.user.tipo != 'AGENTE':
+        return JsonResponse({'error': 'Acesso negado'}, status=403)
+    
+    agente = request.user.agente
+    
+    # Buscar pacientes do agente
+    pacientes = Paciente.objects.filter(agente=agente).select_related('residencia')
+    
+    pacientes_data = []
+    for p in pacientes:
+        pacientes_data.append({
+            'id': p.id,
+            'nome': p.nome,
+            'idade': p.idade,
+            'is_infantil': p.is_infantil,
+            'cpf': p.cpf,
+            'tipo_sanguineo': p.tipo_sanguineo,
+            'endereco': p.endereco,
+            'bairro': p.bairro,
+            'latitude': float(p.latitude) if p.latitude else None,
+            'longitude': float(p.longitude) if p.longitude else None,
+            'residencia_id': p.residencia.id if p.residencia else None,
+            'doenca_atual': p.doenca_atual,
+            'nivel_gravidade': p.nivel_gravidade,
+            'is_cronica': p.is_cronica,
+            'is_contagiosa': p.is_contagiosa,
+            'medicamentos': p.medicamentos,
+            'medicamentos_prescritos': p.medicamentos_prescritos,
+            'necessidades_basicas': p.necessidades_basicas,
+            'recebe_auxilio_governo': p.recebe_auxilio_governo,
+            'tipo_auxilio': p.tipo_auxilio,
+            'tem_acamado': p.tem_acamado,
+            'ultima_consulta': p.ultima_consulta.strftime('%d/%m/%Y') if p.ultima_consulta else None,
+            'proxima_consulta': p.proxima_consulta.strftime('%d/%m/%Y') if p.proxima_consulta else None,
+            'comorbidade': p.comorbidade,
+            'comorbidade_tipo': p.comorbidade_tipo,
+        })
+    
+    # Buscar residências da área
+    residencias = Residencia.objects.filter(
+        Q(agente=agente) | Q(agente__isnull=True, bairro__in=pacientes.values_list('bairro', flat=True).distinct())
+    )
+    
+    residencias_data = []
+    for r in residencias:
+        residencias_data.append({
+            'id': r.id,
+            'endereco': f'{r.endereco_completo}, {r.numero}',
+            'bairro': r.bairro,
+            'status': r.status,
+            'status_display': r.get_status_display(),
+            'qtd_moradores': r.qtd_moradores,
+            'latitude': float(r.latitude),
+            'longitude': float(r.longitude),
+            'cadastrada': r.status == 'CADASTRADA',
+        })
+    
+    # Dados da área do agente
+    area_data = {
+        'nome': agente.area_nome,
+        'coordenadas': agente.area_coordenadas,
+    }
+    
+    # Outros agentes (para mostrar áreas vizinhas)
+    outros_agentes = AgenteSaude.objects.exclude(id=agente.id)
+    outros_agentes_data = []
+    for a in outros_agentes:
+        outros_agentes_data.append({
+            'nome': a.usuario.get_full_name(),
+            'area_nome': a.area_nome,
+            'coordenadas': a.area_coordenadas,
+            'username': a.usuario.username,
+        })
+    
+    return JsonResponse({
+        'pacientes': pacientes_data,
+        'residencias': residencias_data,
+        'minha_area': area_data,
+        'outras_areas': outros_agentes_data,
+    })
+
+
+@login_required
+def mapa_dados_medico(request):
+    """API endpoint para dados do mapa - visão do médico (acesso completo)"""
+    if request.user.tipo != 'MEDICO':
+        return JsonResponse({'error': 'Acesso negado'}, status=403)
+    
+    # Buscar todos os pacientes
+    pacientes = Paciente.objects.all().select_related('residencia', 'agente')
+    
+    pacientes_data = []
+    for p in pacientes:
+        pacientes_data.append({
+            'id': p.id,
+            'nome': p.nome,
+            'idade': p.idade,
+            'is_infantil': p.is_infantil,
+            'cpf': p.cpf,
+            'tipo_sanguineo': p.tipo_sanguineo,
+            'endereco': p.endereco,
+            'bairro': p.bairro,
+            'latitude': float(p.latitude) if p.latitude else None,
+            'longitude': float(p.longitude) if p.longitude else None,
+            'residencia_id': p.residencia.id if p.residencia else None,
+            'doenca_atual': p.doenca_atual,
+            'nivel_gravidade': p.nivel_gravidade,
+            'is_cronica': p.is_cronica,
+            'is_contagiosa': p.is_contagiosa,
+            'medicamentos': p.medicamentos,
+            'medicamentos_prescritos': p.medicamentos_prescritos,
+            'necessidades_basicas': p.necessidades_basicas,
+            'recebe_auxilio_governo': p.recebe_auxilio_governo,
+            'tipo_auxilio': p.tipo_auxilio,
+            'tem_acamado': p.tem_acamado,
+            'ultima_consulta': p.ultima_consulta.strftime('%d/%m/%Y') if p.ultima_consulta else None,
+            'proxima_consulta': p.proxima_consulta.strftime('%d/%m/%Y') if p.proxima_consulta else None,
+            'comorbidade': p.comorbidade,
+            'comorbidade_tipo': p.comorbidade_tipo,
+            'teve_avc': p.teve_avc,
+            'teve_infarto': p.teve_infarto,
+            'bebe': p.bebe,
+            'tipo_bebida': p.tipo_bebida,
+            'fuma': p.fuma,
+            'cigarros_por_dia': p.cigarros_por_dia,
+            'alergia': p.alergia,
+            'alergia_tipo': p.alergia_tipo,
+            # Dados sigilosos - apenas para médicos
+            'prontuario_completo': p.prontuario_completo,
+            'agente': p.agente.usuario.get_full_name() if p.agente else 'Não atribuído',
+        })
+    
+    # Buscar todas as residências
+    residencias = Residencia.objects.all()
+    
+    residencias_data = []
+    for r in residencias:
+        residencias_data.append({
+            'id': r.id,
+            'endereco': f'{r.endereco_completo}, {r.numero}',
+            'bairro': r.bairro,
+            'status': r.status,
+            'status_display': r.get_status_display(),
+            'qtd_moradores': r.qtd_moradores,
+            'latitude': float(r.latitude),
+            'longitude': float(r.longitude),
+            'cadastrada': r.status == 'CADASTRADA',
+        })
+    
+    # Todas as áreas dos agentes
+    agentes = AgenteSaude.objects.all()
+    areas_agentes = []
+    for a in agentes:
+        areas_agentes.append({
+            'nome': a.usuario.get_full_name(),
+            'area_nome': a.area_nome,
+            'coordenadas': a.area_coordenadas,
+            'username': a.usuario.username,
+        })
+    
+    return JsonResponse({
+        'pacientes': pacientes_data,
+        'residencias': residencias_data,
+        'areas_agentes': areas_agentes,
+    })
+
 
 @login_required
 def dashboard_agente(request):

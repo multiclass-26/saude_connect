@@ -15,42 +15,14 @@
     
     <!-- Botão Principal de Login -->
     <div id="main-login-button" style="display: flex; flex-direction: column; gap: 14px; align-items: center; margin-top: 2rem; animation: fadeInUp 0.5s ease-out;">
-        <button onclick="showUserTypes()" style="width: 90%; max-width: 420px; padding: 1.2rem 2rem; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 217, 181, 0.3); transition: all 0.3s ease;">
-            Fazer Login
-        </button>
-        <button onclick="window.location.href='{% url 'registro' %}'" style="width: 90%; max-width: 420px; padding: 1.2rem 2rem; border-radius: 14px; background: white; border: 2px solid var(--accent); color: var(--accent-dark); font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.15);">
-            Criar Conta
+        <button onclick="showLoginForm()" style="width: 90%; max-width: 420px; padding: 1.2rem 2rem; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 217, 181, 0.3); transition: all 0.3s ease;">
+            <i class="fas fa-sign-in-alt"></i> Entrar
         </button>
     </div>
 
-    <!-- Seleção de Tipo de Usuário -->
-    <nav class="login-block" id="user-type-selection" style="display: none;">
-        <h2 style="color: var(--accent-dark); margin-bottom: 1.5rem;">Selecione seu perfil</h2>
-        <button onclick="showLoginForm('agente')" style="width: 90%; max-width: 380px; padding: 1rem 1.5rem; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.05rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-            Agente de Saúde
-        </button>
-        <button onclick="showLoginForm('medico')" style="width: 90%; max-width: 380px; padding: 1rem 1.5rem; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.05rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-            Médico
-        </button>
-        <button onclick="showLoginForm('paciente')" style="width: 90%; max-width: 380px; padding: 1rem 1.5rem; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; font-size: 1.05rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-            Paciente
-        </button>
-        <button onclick="hideUserTypes()" style="width: 90%; max-width: 380px; padding: 0.9rem 1.5rem; border-radius: 12px; background: white; border: 2px solid var(--accent); color: var(--accent-dark); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;">
-            Voltar
-        </button>
-    </nav>
 
-    <!-- Links Públicos -->
-    <div style="margin-top: 2rem; text-align: center;">
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
-            <a href="{% url 'comunidade' %}" style="color: var(--accent-dark); text-decoration: none; font-weight: 600; font-size: 1rem; padding: 0.5rem 1rem; border: 2px solid var(--accent); border-radius: 8px; transition: all 0.3s;">
-                🌐 Comunidade
-            </a>
-            <a href="{% url 'informacoes' %}" style="color: var(--accent-dark); text-decoration: none; font-weight: 600; font-size: 1rem; padding: 0.5rem 1rem; border: 2px solid var(--accent); border-radius: 8px; transition: all 0.3s;">
-                ℹ️ Informações
-            </a>
-        </div>
-    </div>
+
+
 
     <!-- Credenciais de Teste -->
     <div class="credentials-panel panel" id="credentials-panel" style="margin-top: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
@@ -58,17 +30,17 @@
         <div style="display: grid; gap: 14px; font-size: 0.95rem;">
             <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 12px; border-radius: 10px; border-left: 4px solid var(--accent); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
                 <strong style="color: var(--accent-dark);">Agente de Saúde:</strong><br>
-                <span style="color: var(--text-secondary);">ID: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">AG001</code> | 
+                <span style="color: var(--text-secondary);">Usuário: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">agente</code> | 
                 Senha: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">123</code></span>
             </div>
             <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 12px; border-radius: 10px; border-left: 4px solid #3b82f6; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
                 <strong style="color: #3b82f6;">Médico:</strong><br>
-                <span style="color: var(--text-secondary);">CRM: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">CRM12345</code> | 
+                <span style="color: var(--text-secondary);">Usuário: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">medico</code> | 
                 Senha: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">123</code></span>
             </div>
             <div style="background: linear-gradient(135deg, #f9fafb, #ffffff); padding: 12px; border-radius: 10px; border-left: 4px solid var(--success); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);">
                 <strong style="color: var(--success);">Paciente:</strong><br>
-                <span style="color: var(--text-secondary);">CPF: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">111.222.333-44</code> | 
+                <span style="color: var(--text-secondary);">Usuário: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">paciente</code> | 
                 Senha: <code style="background: #e5e7eb; padding: 3px 8px; border-radius: 5px; font-weight: 600; color: var(--text-primary);">123</code></span>
             </div>
         </div>
@@ -78,16 +50,23 @@
     <div id="login-forms" style="display: none; margin-top: 20px;">
         <form method="post" class="form panel" style="max-width: 450px; margin: 0 auto; background: white; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);">
             {% csrf_token %}
-            <input type="hidden" id="tipo-login" name="tipo" value="">
-            <h3 id="form-title" style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.4rem;"></h3>
-            <input type="text" id="identificador" name="identificador" placeholder="" required style="width: 100%; max-width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s;">
-            <input type="password" name="senha" placeholder="Senha" required style="width: 100%; max-width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s;">
+            <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; font-size: 1.4rem; text-align: center;"><i class="fas fa-sign-in-alt"></i> Login</h3>
+            <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">Usuário</label>
+            <input type="text" name="identificador" placeholder="Digite seu usuário" required style="width: 100%; max-width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s; margin-bottom: 1rem;">
+            <label style="display: block; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">Senha</label>
+            <input type="password" name="senha" placeholder="Digite sua senha" required style="width: 100%; max-width: 100%; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s; margin-bottom: 1rem;">
             <button type="submit" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 217, 181, 0.25); transition: all 0.2s; margin-top: 0.5rem;">
-                Entrar
+                <i class="fas fa-sign-in-alt"></i> Entrar
             </button>
             <button type="button" onclick="hideLoginForm()" style="width: 100%; padding: 0.9rem; background: white; color: var(--accent-dark); border: 2px solid var(--accent); border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem;">
-                Voltar
+                <i class="fas fa-arrow-left"></i> Voltar
             </button>
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e5e7eb; text-align: center;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">Ainda não tem uma conta?</p>
+                <button type="button" onclick="window.location.href='{% url 'registro' %}'" style="width: 100%; padding: 1rem; background: white; color: var(--accent-dark); border: 2px solid var(--accent); border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                    <i class="fas fa-user-plus"></i> Criar Conta
+                </button>
+            </div>
         </form>
     </div>
 </section>
@@ -114,65 +93,28 @@ input:focus {
 </style>
 
 <script>
-function showUserTypes() {
+function showLoginForm() {
     const mainButton = document.getElementById('main-login-button');
-    const userTypeSelection = document.getElementById('user-type-selection');
+    const loginForms = document.getElementById('login-forms');
     const brand = document.getElementById('main-brand');
     const credentials = document.getElementById('credentials-panel');
     
     mainButton.style.display = 'none';
-    userTypeSelection.style.display = 'flex';
+    loginForms.style.display = 'block';
     brand.style.display = 'none';
     if (credentials) credentials.style.display = 'none';
 }
 
-function hideUserTypes() {
+function hideLoginForm() {
     const mainButton = document.getElementById('main-login-button');
-    const userTypeSelection = document.getElementById('user-type-selection');
+    const loginForms = document.getElementById('login-forms');
     const brand = document.getElementById('main-brand');
     const credentials = document.getElementById('credentials-panel');
     
     mainButton.style.display = 'flex';
-    userTypeSelection.style.display = 'none';
+    loginForms.style.display = 'none';
     brand.style.display = 'flex';
     if (credentials) credentials.style.display = 'block';
-}
-
-function showLoginForm(tipo) {
-    const loginForms = document.getElementById('login-forms');
-    const userTypeSelection = document.getElementById('user-type-selection');
-    const credentials = document.getElementById('credentials-panel');
-    
-    loginForms.style.display = 'block';
-    userTypeSelection.style.display = 'none';
-    if (credentials) credentials.style.display = 'none';
-    
-    document.getElementById('tipo-login').value = tipo;
-    
-    const placeholders = {
-        'agente': 'Digite o ID do Agente (ex: AG001)',
-        'medico': 'Digite o CRM (ex: CRM12345)',
-        'paciente': 'Digite o CPF (ex: 111.222.333-44)'
-    };
-    
-    const titles = {
-        'agente': 'Login - Agente de Saúde',
-        'medico': 'Login - Médico',
-        'paciente': 'Login - Paciente'
-    };
-    
-    document.getElementById('identificador').placeholder = placeholders[tipo];
-    document.getElementById('form-title').textContent = titles[tipo];
-}
-
-function hideLoginForm() {
-    const loginForms = document.getElementById('login-forms');
-    const userTypeSelection = document.getElementById('user-type-selection');
-    const credentials = document.getElementById('credentials-panel');
-    
-    loginForms.style.display = 'none';
-    userTypeSelection.style.display = 'flex';
-    if (credentials) credentials.style.display = 'none';
 }
 </script>
 {% endblock %}

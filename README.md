@@ -2,9 +2,9 @@
 
 Sistema de gestão de saúde com Django para Médicos, Agentes de Saúde e Pacientes.
 
-## 🚀 Deploy Rápido no Railway
+## 🚀 Deploy Automático no Railway
 
-### Passo 1: Preparar o Repositório Git
+### Passo 1: Criar Repositório no GitHub
 
 ```bash
 git init
@@ -12,11 +12,8 @@ git add .
 git commit -m "Initial commit - Saúde Conectada"
 ```
 
-### Passo 2: Criar Repositório no GitHub
-
 1. Acesse [GitHub](https://github.com/) e crie um novo repositório
 2. **Não** inicialize com README, .gitignore ou licença
-3. Copie a URL do repositório
 
 ```bash
 git remote add origin https://github.com/seu-usuario/saude-conectada.git
@@ -24,16 +21,21 @@ git branch -M main
 git push -u origin main
 ```
 
-### Passo 3: Deploy no Railway
+### Passo 2: Deploy no Railway
 
 1. Acesse [Railway.app](https://railway.app/)
 2. Faça login com GitHub
 3. Clique em **"New Project"**
 4. Selecione **"Deploy from GitHub repo"**
 5. Escolha o repositório **saude-conectada**
-6. Railway detectará automaticamente o Django e começará o deploy
 
-### Passo 4: Configurar Variáveis de Ambiente
+✅ **O Railway executará automaticamente:**
+- Instalação de dependências
+- Migrações do banco de dados
+- **Criação automática dos usuários de teste**
+- Inicialização do servidor
+
+### Passo 3: Configurar Variáveis de Ambiente
 
 No painel do Railway, clique em **Variables** e adicione:
 
@@ -43,60 +45,24 @@ DEBUG=False
 ALLOWED_HOSTS=.railway.app
 ```
 
-**Para gerar um SECRET_KEY seguro:**
-```python
+**Para gerar um SECRET_KEY:**
+```bash
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-### Passo 5: Adicionar PostgreSQL (Recomendado)
+### Passo 4 (Opcional): Adicionar PostgreSQL
 
-1. No projeto Railway, clique em **"New"**
-2. Selecione **"Database"** → **"Add PostgreSQL"**
-3. Railway conectará automaticamente ao Django
-4. A variável `DATABASE_URL` será configurada automaticamente
+1. No projeto Railway, clique em **"New"** → **"Database"** → **"PostgreSQL"**
+2. A conexão é configurada automaticamente via `DATABASE_URL`
 
-### Passo 6: Criar Dados de Teste
+## 🔑 Credenciais de Teste (Criadas Automaticamente)
 
-Após o deploy, use o Railway CLI:
-
-```bash
-# Instalar Railway CLI
-npm i -g @railway/cli
-
-# Fazer login
-railway login
-
-# Conectar ao projeto
-railway link
-
-# Criar dados de teste
-railway run python create_test_data.py
-```
-
-**Ou use o console web do Railway:**
-1. Vá em "Settings" → "Deploy Logs"
-2. Execute: `python create_test_data.py`
-
-### Passo 7: Acessar o App
-
-Sua URL será algo como: `https://seu-app.railway.app`
-
-## 🔑 Credenciais de Teste
-
-- **Admin:** admin / 123
-- **Agente:** AG001 / 123
-- **Médico:** CRM12345 / 123
-- **Paciente:** 111.222.333-44 / 123
-
-## 📦 Arquivos Criados para Deploy
-
-- ✅ `Procfile` - Comando para iniciar o Gunicorn
-- ✅ `runtime.txt` - Versão do Python
-- ✅ `railway.json` - Configuração Railway
-- ✅ `nixpacks.toml` - Build configuration
-- ✅ `requirements.txt` - Dependências atualizadas
-- ✅ `.gitignore` - Arquivos a ignorar
-- ✅ `create_test_data.py` - Script para dados de teste
+| Tipo | Usuário | Senha |
+|------|---------|-------|
+| **Admin** | `admin` | `123` |
+| **Médico** | `medico` | `123` |
+| **Agente** | `agente` | `123` |
+| **Paciente** | `paciente` | `123` |
 
 ## 🛠️ Desenvolvimento Local
 
@@ -104,33 +70,67 @@ Sua URL será algo como: `https://seu-app.railway.app`
 # Criar ambiente virtual
 python -m venv venv
 venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/Mac
 
 # Instalar dependências
 pip install -r requirements.txt
 
-# Executar migrações
+# Executar migrações e criar usuários automaticamente
 python manage.py migrate
-
-# Criar dados de teste
-python create_test_data.py
+python manage.py create_users
 
 # Iniciar servidor
 python manage.py runserver
 ```
 
-## 📝 Checklist Pré-Deploy
+Acesse: `http://localhost:8000`
 
-- [x] Requirements.txt atualizado
-- [x] Gunicorn instalado
-- [x] WhiteNoise para arquivos estáticos
-- [x] python-decouple para variáveis de ambiente
-- [x] dj-database-url para PostgreSQL
-- [x] Settings.py configurado para produção
-- [x] Procfile criado
-- [x] .gitignore configurado
-- [x] Script de dados de teste
+## 📦 Estrutura do Projeto
 
-## ✅ App Pronto para Deploy!
+```
+app_saude_connect/
+├── accounts/           # Autenticação e usuários
+│   ├── management/
+│   │   └── commands/
+│   │       └── create_users.py  # Criação automática de usuários
+├── patients/          # Gestão de pacientes
+├── reminders/         # Lembretes e notificações
+├── config/            # Configurações do Django
+├── static/            # Arquivos estáticos (CSS, JS, imagens)
+├── templates/         # Templates HTML
+├── Procfile           # Comando Railway (com criação automática de usuários)
+├── requirements.txt   # Dependências Python
+└── runtime.txt        # Versão do Python
+```
 
-O app está 100% pronto para deploy no Railway. Siga os passos acima e em 5 minutos estará no ar!
+## ✨ Recursos
+
+- ✅ Login simplificado (usuário + senha)
+- ✅ Dashboards personalizados por tipo de usuário
+- ✅ Vídeos educativos de exercícios e saúde
+- ✅ Sistema de notificações
+- ✅ Interface acessível com ícones
+- ✅ Deploy automático no Railway
+- ✅ Criação automática de usuários de teste
+
+## 🔧 Tecnologias
+
+- Django 5.2.7
+- Python 3.12
+- SQLite (local) / PostgreSQL (produção)
+- WhiteNoise para arquivos estáticos
+- Gunicorn como servidor WSGI
+
+## 📝 Procfile (Configuração Railway)
+
+```
+web: python manage.py migrate && python manage.py create_users && gunicorn config.wsgi --log-file -
+```
+
+Este comando garante que a cada deploy:
+1. As migrações são executadas
+2. Os usuários de teste são criados automaticamente
+3. O servidor Gunicorn é iniciado
+
+## ✅ Pronto para Produção!
+
+O aplicativo está 100% configurado para deploy no Railway com criação automática de usuários.

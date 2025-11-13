@@ -8,18 +8,27 @@
 {% else %}bg-login{% endif %}
 {% endblock %}
 
+{% block extra_head %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
+
 {% block content %}
 <div class="container" style="max-width: 1400px; margin: 2rem auto; padding: 0 1rem;">
     <!-- Header -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <div>
-            <a href="javascript:history.back()" class="back" style="display: inline-block; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 10px; font-weight: 600;">← Voltar</a>
-            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-dark);">🗺️ Mapa de Atendimento</h1>
+            <a href="javascript:history.back()" class="btn-back" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 10px; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid var(--accent); border-radius: 8px; background: white; transition: all 0.3s;">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-dark);"><i class="fas fa-map-marked-alt"></i> Mapa de Atendimento</h1>
             <p style="color: var(--text-secondary); font-size: 1.1rem;">
                 {% if user.tipo == 'AGENTE' %}
-                    Visualize sua área de atuação e pacientes atendidos
+                    Visualize sua área de atuação, pacientes e residências
                 {% elif user.tipo == 'MEDICO' %}
-                    Visualize a distribuição de pacientes na região
+                    Acesso completo a todos os pacientes e áreas
                 {% elif user.tipo == 'PACIENTE' %}
                     Encontre unidades de saúde próximas a você
                 {% endif %}
@@ -27,180 +36,100 @@
         </div>
         <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
             <a href="{% url 'perfil' %}" class="btn" style="background: white; border: 2px solid var(--accent); color: var(--accent-dark); text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; transition: all 0.2s;">
-                👤 Perfil
+                <i class="fas fa-user"></i> Perfil
             </a>
             <a href="{% url 'dashboard' %}" class="btn" style="background: var(--accent); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.2); transition: all 0.2s;">
-                🏠 Dashboard
+                Dashboard
             </a>
         </div>
     </div>
 
     <!-- Container do Mapa -->
     <div class="panel" style="background: white; padding: 0; overflow: hidden; margin-bottom: 2rem;">
-        <div id="map-container" style="width: 100%; height: 600px; background: #e5e7eb; position: relative; border-radius: 12px;">
-            <!-- Mapa Interativo -->
-            <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.2962743498845!2d-43.17650892464658!3d-22.906847379245935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f5e4c1e4e4f%3A0x1e4f4e4c1e4e4f!2sRio%20de%20Janeiro%2C%20RJ!5e0!3m2!1spt-BR!2sbr!4v1699000000000!5m2!1spt-BR!2sbr" 
-                width="100%" 
-                height="600" 
-                style="border:0; border-radius: 12px;" 
-                allowfullscreen="" 
-                loading="lazy" 
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-            
-            <!-- Controles do Mapa -->
-            <div style="position: absolute; top: 20px; right: 20px; background: white; padding: 1rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); z-index: 10;">
-                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-dark); font-size: 0.9rem;">🎯 Filtros</h4>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    {% if user.tipo == 'AGENTE' or user.tipo == 'MEDICO' %}
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem;">
-                        <input type="checkbox" checked> Pacientes
-                    </label>
-                    {% endif %}
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem;">
-                        <input type="checkbox" checked> UBS
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem;">
-                        <input type="checkbox" checked> Hospitais
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem;">
-                        <input type="checkbox" checked> Farmácias
-                    </label>
-                </div>
-            </div>
+        <div id="map" style="width: 100%; height: 600px; border-radius: 12px;"></div>
+    </div>
+
+    <!-- Controles e Filtros -->
+    {% if user.tipo == 'AGENTE' or user.tipo == 'MEDICO' %}
+    <div class="panel" style="background: white; margin-bottom: 2rem;">
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; text-align: left;"><i class="fas fa-filter"></i> Filtros e Visualização</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-pacientes" checked onchange="toggleMarkers('pacientes')"> 
+                <i class="fas fa-users" style="color: var(--accent);"></i> Todos os Pacientes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-graves" checked onchange="toggleMarkers('graves')"> 
+                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Casos Graves
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-cronicos" checked onchange="toggleMarkers('cronicos')"> 
+                <i class="fas fa-heartbeat" style="color: #f59e0b;"></i> Doenças Crônicas
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-residencias-cadastradas" checked onchange="toggleMarkers('residencias-cadastradas')"> 
+                <i class="fas fa-home" style="color: var(--success);"></i> Residências Cadastradas
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-residencias-nao-cadastradas" checked onchange="toggleMarkers('residencias-nao-cadastradas')"> 
+                <i class="fas fa-home" style="color: #ef4444;"></i> Residências Não Cadastradas
+            </label>
+            {% if user.tipo == 'AGENTE' %}
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-minha-area" checked onchange="toggleArea('minha')"> 
+                <i class="fas fa-draw-polygon" style="color: var(--accent);"></i> Minha Área
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-outras-areas" onchange="toggleArea('outras')"> 
+                <i class="fas fa-draw-polygon" style="color: #9ca3af;"></i> Áreas de Outros Agentes
+            </label>
+            {% elif user.tipo == 'MEDICO' %}
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-todas-areas" checked onchange="toggleArea('todas')"> 
+                <i class="fas fa-draw-polygon" style="color: var(--accent);"></i> Áreas dos Agentes
+            </label>
+            {% endif %}
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-ubs" checked onchange="toggleMarkers('ubs')"> 
+                <i class="fas fa-hospital" style="color: #3b82f6;"></i> UBS
+            </label>
         </div>
     </div>
 
-    <!-- Estatísticas e Informações -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-        {% if user.tipo == 'AGENTE' %}
-        <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.1), rgba(0, 217, 181, 0.05)); border-left: 4px solid var(--accent);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">👥</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">45</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Famílias Atendidas</div>
-                </div>
+    <!-- Legenda -->
+    <div class="panel" style="background: white; margin-bottom: 2rem;">
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; text-align: left;"><i class="fas fa-info-circle"></i> Legenda</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 20px; height: 20px; background: var(--accent); border-radius: 50%;"></div>
+                <span style="font-size: 0.9rem;">Paciente Normal</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 20px; height: 20px; background: var(--danger); border-radius: 50%;"></div>
+                <span style="font-size: 0.9rem;">Caso Grave/Crítico</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 20px; height: 20px; background: #f59e0b; border-radius: 50%;"></div>
+                <span style="font-size: 0.9rem;">Doença Crônica</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 16px; height: 16px; background: var(--success); border-radius: 3px;"></div>
+                <span style="font-size: 0.9rem;">Residência Cadastrada</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 16px; height: 16px; background: #ef4444; border-radius: 3px;"></div>
+                <span style="font-size: 0.9rem;">Residência Não Cadastrada</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 16px; height: 16px; background: #f59e0b; border-radius: 3px;"></div>
+                <span style="font-size: 0.9rem;">Residência Pendente</span>
             </div>
         </div>
-        
-        <div class="panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); border-left: 4px solid #3b82f6;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">📍</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">8.5 km²</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Área de Cobertura</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">🏥</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);">3</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Unidades Próximas</div>
-                </div>
-            </div>
-        </div>
-        
-        {% elif user.tipo == 'MEDICO' %}
-        <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.1), rgba(0, 217, 181, 0.05)); border-left: 4px solid var(--accent);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">👨‍⚕️</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">127</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Pacientes Cadastrados</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); border-left: 4px solid #3b82f6;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">🏢</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">2</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Unidades de Atendimento</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">📊</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);">15 km</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Raio de Atuação</div>
-                </div>
-            </div>
-        </div>
-        
-        {% elif user.tipo == 'PACIENTE' %}
-        <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.1), rgba(0, 217, 181, 0.05)); border-left: 4px solid var(--accent);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">🏥</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">1.2 km</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">UBS Mais Próxima</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); border-left: 4px solid #3b82f6;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">🏨</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">3.5 km</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Hospital Mais Próximo</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">💊</div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);">0.8 km</div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Farmácia Mais Próxima</div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div>
+    {% endif %}
 
-    <!-- Lista de Locais -->
-    <div class="panel" style="background: white;">
-        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; text-align: left;">📍 Locais de Interesse</h3>
-        <div style="display: grid; gap: 1rem;">
-            <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4 style="color: var(--accent-dark); margin-bottom: 0.25rem; text-align: left;">🏥 UBS Centro</h4>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0; text-align: left;">Rua Principal, 123 - Centro</p>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0; text-align: left;">📞 (11) 3333-4444 | ⏰ 7h às 17h</p>
-                </div>
-                <button style="padding: 0.5rem 1rem; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Ver no Mapa</button>
-            </div>
-            
-            <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4 style="color: #3b82f6; margin-bottom: 0.25rem; text-align: left;">🏨 Hospital Municipal</h4>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0; text-align: left;">Av. Principal, 456 - Centro</p>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0; text-align: left;">📞 (11) 3333-5555 | ⏰ 24 horas</p>
-                </div>
-                <button style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Ver no Mapa</button>
-            </div>
-            
-            <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--success); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4 style="color: var(--success); margin-bottom: 0.25rem; text-align: left;">💊 Farmácia Popular</h4>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0; text-align: left;">Rua Comercial, 789 - Centro</p>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0; text-align: left;">📞 (11) 3333-6666 | ⏰ 8h às 22h</p>
-                </div>
-                <button style="padding: 0.5rem 1rem; background: var(--success); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Ver no Mapa</button>
-            </div>
-        </div>
-    </div>
+    <!-- Estatísticas -->
+    <div id="estatisticas-container"></div>
 </div>
 
 <style>
@@ -217,5 +146,593 @@ a[href]:hover {
 .panel:hover {
     transform: translateY(-2px);
 }
+
+.popup-section {
+    margin: 0.75rem 0;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+}
+
+.popup-section h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.popup-info {
+    margin: 0.25rem 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 0.125rem;
+}
+
+.badge-success { background: #d1fae5; color: #065f46; }
+.badge-danger { background: #fee2e2; color: #991b1b; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+.badge-info { background: #dbeafe; color: #1e40af; }
 </style>
+
+<script>
+// Variáveis globais
+let map;
+let markers = {
+    pacientes: [],
+    graves: [],
+    cronicos: [],
+    'residencias-cadastradas': [],
+    'residencias-nao-cadastradas': [],
+    ubs: []
+};
+let areas = {
+    minha: null,
+    outras: [],
+    todas: []
+};
+
+// Coordenadas de Aracaju (centro)
+const aracajuCenter = [-10.9472, -37.0731];
+
+// Ícones customizados
+const icons = {
+    pacienteNormal: L.divIcon({
+        html: '<div style="background: var(--accent); width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+        popupAnchor: [0, -12],
+        className: 'custom-icon'
+    }),
+    pacienteGrave: L.divIcon({
+        html: '<div style="background: var(--danger); width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(239,68,68,0.5); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">!</div>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14],
+        className: 'custom-icon'
+    }),
+    pacienteCronico: L.divIcon({
+        html: '<div style="background: #f59e0b; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+        popupAnchor: [0, -12],
+        className: 'custom-icon'
+    }),
+    residenciaCadastrada: L.divIcon({
+        html: '<div style="background: var(--success); width: 20px; height: 20px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); opacity: 0.8;"></div>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+        popupAnchor: [0, -10],
+        className: 'custom-icon'
+    }),
+    residenciaNaoCadastrada: L.divIcon({
+        html: '<div style="background: #ef4444; width: 18px; height: 18px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); opacity: 0.7;"></div>',
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+        popupAnchor: [0, -9],
+        className: 'custom-icon'
+    }),
+    residenciaPendente: L.divIcon({
+        html: '<div style="background: #f59e0b; width: 18px; height: 18px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); opacity: 0.7;"></div>',
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+        popupAnchor: [0, -9],
+        className: 'custom-icon'
+    }),
+    ubs: L.divIcon({
+        html: '<div style="background: #3b82f6; width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;"></div>',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -16],
+        className: 'custom-icon'
+    })
+};
+
+// UBS de Aracaju (dados estáticos)
+const locationsUBS = [
+    { lat: -10.9472, lng: -37.0731, nome: "UBS Centro", endereco: "Rua João Pessoa, 123", telefone: "(79) 3234-5678", horario: "7h às 17h" },
+    { lat: -10.9520, lng: -37.0680, nome: "UBS Jardins", endereco: "Av. Beira Mar, 456", telefone: "(79) 3234-5679", horario: "7h às 17h" },
+    { lat: -10.9400, lng: -37.0800, nome: "UBS Bugio", endereco: "Rua Laranjeiras, 789", telefone: "(79) 3234-5680", horario: "7h às 17h" }
+];
+
+// Função para criar popup de paciente (individual)
+function criarPopupPaciente(paciente, isMedico) {
+    let gravidadeClass = '';
+    let gravidadeText = '';
+    
+    if (paciente.nivel_gravidade) {
+        switch(paciente.nivel_gravidade) {
+            case 'CRITICA': gravidadeClass = 'badge-danger'; gravidadeText = 'Crítica'; break;
+            case 'GRAVE': gravidadeClass = 'badge-danger'; gravidadeText = 'Grave'; break;
+            case 'MODERADA': gravidadeClass = 'badge-warning'; gravidadeText = 'Moderada'; break;
+            case 'LEVE': gravidadeClass = 'badge-success'; gravidadeText = 'Leve'; break;
+        }
+    }
+    
+    let popup = `
+        <div style="min-width: 280px; max-width: 350px;">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-dark); font-size: 1rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem;">
+                <i class="fas fa-user-circle"></i> ${paciente.nome}
+            </h4>
+            
+            <div style="margin: 0.5rem 0; padding: 0.5rem; background: #f9fafb; border-radius: 4px;">
+                <p class="popup-info"><strong>CPF:</strong> ${paciente.cpf || 'Não informado'}</p>
+                <p class="popup-info"><strong>Idade:</strong> ${paciente.idade} anos ${paciente.is_infantil ? '<span class="badge badge-info">Infantil</span>' : ''}</p>
+                <p class="popup-info"><strong>Tipo Sanguíneo:</strong> ${paciente.tipo_sanguineo || 'N/A'}</p>
+            </div>
+    `;
+    
+    if (paciente.doenca_atual) {
+        popup += `
+            <div style="margin: 0.5rem 0; padding: 0.5rem; background: #fee2e2; border-radius: 4px;">
+                <p class="popup-info"><strong>Doença:</strong> ${paciente.doenca_atual}</p>
+                ${paciente.nivel_gravidade ? `<p class="popup-info"><span class="badge ${gravidadeClass}">${gravidadeText}</span></p>` : ''}
+                ${paciente.is_cronica ? '<span class="badge badge-warning">Crônica</span>' : ''}
+                ${paciente.is_contagiosa ? '<span class="badge badge-danger">Contagiosa</span>' : ''}
+            </div>
+        `;
+    }
+    
+    if (paciente.medicamentos) {
+        popup += `<p class="popup-info" style="font-size: 0.8rem; margin-top: 0.5rem;"><strong>Medicamentos:</strong> ${paciente.medicamentos.substring(0, 50)}...</p>`;
+    }
+    
+    popup += `</div>`;
+    return popup;
+}
+
+// Função para criar popup de residência
+function criarPopupResidencia(residencia, pacientes, isMedico) {
+    let statusClass = '';
+    let statusIcon = '';
+    
+    switch(residencia.status) {
+        case 'CADASTRADA':
+            statusClass = 'badge-success';
+            statusIcon = 'check-circle';
+            break;
+        case 'NAO_CADASTRADA':
+            statusClass = 'badge-danger';
+            statusIcon = 'times-circle';
+            break;
+        case 'PENDENTE':
+            statusClass = 'badge-warning';
+            statusIcon = 'clock';
+            break;
+    }
+    
+    let popup = `
+        <div style="min-width: 320px; max-width: 450px;">
+            <h4 style="margin: 0 0 0.75rem 0; color: var(--accent-dark); font-size: 1.1rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem;">
+                <i class="fas fa-home"></i> ${residencia.endereco}
+            </h4>
+            <p style="margin: 0.25rem 0; font-size: 0.9rem;">
+                <strong>Bairro:</strong> ${residencia.bairro}
+            </p>
+            <p style="margin: 0.25rem 0 0.75rem 0; font-size: 0.9rem;">
+                <strong>Status:</strong> <span class="badge ${statusClass}"><i class="fas fa-${statusIcon}"></i> ${residencia.status_display}</span>
+            </p>
+    `;
+    
+    // Mostrar pacientes desta residência
+    if (pacientes && pacientes.length > 0) {
+        popup += `
+            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 2px solid #e5e7eb;">
+                <h5 style="margin: 0 0 0.5rem 0; color: var(--accent-dark); font-size: 0.95rem;">
+                    <i class="fas fa-users"></i> Moradores (${pacientes.length})
+                </h5>
+        `;
+        
+        pacientes.forEach((paciente, index) => {
+            let gravidade = '';
+            if (paciente.nivel_gravidade === 'GRAVE' || paciente.nivel_gravidade === 'CRITICA') {
+                gravidade = '<span class="badge badge-danger">⚠️ Grave</span>';
+            } else if (paciente.is_cronica) {
+                gravidade = '<span class="badge badge-warning">Crônica</span>';
+            }
+            
+            popup += `
+                <div style="margin: 0.5rem 0; padding: 0.75rem; background: ${index % 2 === 0 ? '#f9fafb' : '#ffffff'}; border-radius: 6px; border-left: 3px solid var(--accent);">
+                    <p style="margin: 0; font-size: 0.9rem; font-weight: 600; color: var(--accent-dark);">
+                        <i class="fas fa-user"></i> ${paciente.nome}, ${paciente.idade} anos
+                    </p>
+                    <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">
+                        ${paciente.tipo_sanguineo ? `Tipo: ${paciente.tipo_sanguineo} | ` : ''}
+                        ${paciente.cpf || 'CPF não informado'}
+                    </p>
+                    ${paciente.doenca_atual ? `
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem;">
+                            <strong>Condição:</strong> ${paciente.doenca_atual} ${gravidade}
+                        </p>
+                    ` : ''}
+                    ${paciente.medicamentos ? `
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.8rem; color: #6b7280;">
+                            <i class="fas fa-pills"></i> Em uso de medicação
+                        </p>
+                    ` : ''}
+                    ${paciente.necessidades_basicas ? `
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.8rem; color: #6b7280;">
+                            <i class="fas fa-hand-holding-heart"></i> ${paciente.necessidades_basicas}
+                        </p>
+                    ` : ''}
+                    ${paciente.ultima_consulta ? `
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.8rem; color: #6b7280;">
+                            <i class="fas fa-calendar"></i> Última consulta: ${paciente.ultima_consulta}
+                        </p>
+                    ` : ''}
+                </div>
+            `;
+        });
+        
+        popup += `</div>`;
+    } else if (residencia.cadastrada) {
+        popup += `
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280; font-style: italic;">
+                <i class="fas fa-info-circle"></i> Nenhum morador cadastrado ainda
+            </p>
+        `;
+    } else {
+        popup += `
+            <p style="margin: 0.5rem 0; padding: 0.75rem; background: #fee2e2; border-radius: 6px; font-size: 0.85rem; color: #991b1b;">
+                <i class="fas fa-exclamation-triangle"></i> Residência não cadastrada. Necessita visita do agente.
+            </p>
+        `;
+    }
+    
+    popup += `</div>`;
+    
+    return popup;
+}
+
+// Carregar dados do backend
+async function carregarDadosMapa() {
+    try {
+        const userTipo = '{{ user.tipo }}';
+        let url = '';
+        
+        if (userTipo === 'AGENTE') {
+            url = '{% url "mapa_dados_agente" %}';
+        } else if (userTipo === 'MEDICO') {
+            url = '{% url "mapa_dados_medico" %}';
+        } else {
+            return; // Pacientes não têm acesso
+        }
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Organizar pacientes por residência
+        const pacientesPorResidencia = {};
+        data.pacientes.forEach(paciente => {
+            if (paciente.residencia_id) {
+                if (!pacientesPorResidencia[paciente.residencia_id]) {
+                    pacientesPorResidencia[paciente.residencia_id] = [];
+                }
+                pacientesPorResidencia[paciente.residencia_id].push(paciente);
+            }
+        });
+        
+        // Adicionar residências com seus pacientes
+        data.residencias.forEach(residencia => {
+            let icon;
+            let categoria;
+            
+            // Determinar ícone e cor baseado na gravidade dos pacientes
+            const pacientesNaResidencia = pacientesPorResidencia[residencia.id] || [];
+            const temGrave = pacientesNaResidencia.some(p => p.nivel_gravidade === 'GRAVE' || p.nivel_gravidade === 'CRITICA');
+            const temCronico = pacientesNaResidencia.some(p => p.is_cronica);
+            
+            if (residencia.status === 'CADASTRADA') {
+                if (temGrave) {
+                    icon = L.divIcon({
+                        html: '<div style="background: var(--danger); width: 28px; height: 28px; border: 3px solid white; box-shadow: 0 2px 8px rgba(239,68,68,0.5); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;"></div>',
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14],
+                        popupAnchor: [0, -14],
+                        className: 'custom-icon'
+                    });
+                } else if (temCronico) {
+                    icon = L.divIcon({
+                        html: '<div style="background: #f59e0b; width: 26px; height: 26px; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;"></div>',
+                        iconSize: [26, 26],
+                        iconAnchor: [13, 13],
+                        popupAnchor: [0, -13],
+                        className: 'custom-icon'
+                    });
+                } else {
+                    icon = L.divIcon({
+                        html: '<div style="background: var(--success); width: 24px; height: 24px; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;"></div>',
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12],
+                        popupAnchor: [0, -12],
+                        className: 'custom-icon'
+                    });
+                }
+                categoria = 'residencias-cadastradas';
+            } else if (residencia.status === 'NAO_CADASTRADA') {
+                icon = L.divIcon({
+                    html: '<div style="background: #ef4444; width: 20px; height: 20px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); opacity: 0.7;"></div>',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10],
+                    popupAnchor: [0, -10],
+                    className: 'custom-icon'
+                });
+                categoria = 'residencias-nao-cadastradas';
+            } else {
+                icon = L.divIcon({
+                    html: '<div style="background: #f59e0b; width: 20px; height: 20px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); opacity: 0.7;"></div>',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10],
+                    popupAnchor: [0, -10],
+                    className: 'custom-icon'
+                });
+                categoria = 'residencias-nao-cadastradas';
+            }
+            
+            const marker = L.marker([residencia.latitude, residencia.longitude], { icon: icon }).addTo(map);
+            marker.bindPopup(criarPopupResidencia(residencia, pacientesNaResidencia, userTipo === 'MEDICO'));
+            
+            markers[categoria].push(marker);
+            
+            // Adicionar aos filtros de gravidade se necessário
+            if (temGrave) {
+                markers.graves.push(marker);
+            }
+            if (temCronico) {
+                markers.cronicos.push(marker);
+            }
+        });
+        
+        // Cores diferentes para cada área de agente
+        const coresAgentes = {
+            'agente': { cor: '#3b82f6', nome: 'Paulo' },          // Azul
+            'andre_agente': { cor: '#10b981', nome: 'André' },    // Verde
+            'fernanda_agente': { cor: '#f59e0b', nome: 'Fernanda' } // Laranja
+        };
+        
+        // Adicionar áreas
+        if (userTipo === 'AGENTE') {
+            // Minha área
+            if (data.minha_area && data.minha_area.coordenadas) {
+                const username = '{{ user.username }}';
+                const configArea = coresAgentes[username] || { cor: 'var(--accent)', nome: 'Minha' };
+                
+                areas.minha = L.polygon(data.minha_area.coordenadas, {
+                    color: configArea.cor,
+                    fillColor: configArea.cor,
+                    fillOpacity: 0.2,
+                    weight: 3
+                }).addTo(map);
+                
+                areas.minha.bindPopup(`<strong>${data.minha_area.nome}</strong><br>Sua área de responsabilidade`);
+            }
+            
+            // Outras áreas
+            if (data.outras_areas) {
+                data.outras_areas.forEach(area => {
+                    if (area.coordenadas && area.username) {
+                        const configArea = coresAgentes[area.username] || { cor: '#9ca3af', nome: area.nome };
+                        
+                        const polygon = L.polygon(area.coordenadas, {
+                            color: configArea.cor,
+                            fillColor: configArea.cor,
+                            fillOpacity: 0.1,
+                            weight: 2,
+                            dashArray: '5, 5'
+                        });
+                        
+                        polygon.bindPopup(`<strong>${area.area_nome}</strong><br>Agente: ${area.nome}`);
+                        areas.outras.push(polygon);
+                    }
+                });
+            }
+        } else if (userTipo === 'MEDICO') {
+            // Todas as áreas com cores diferentes
+            if (data.areas_agentes) {
+                data.areas_agentes.forEach((area) => {
+                    if (area.coordenadas && area.username) {
+                        const configArea = coresAgentes[area.username] || { cor: '#9ca3af', nome: area.nome };
+                        
+                        const polygon = L.polygon(area.coordenadas, {
+                            color: configArea.cor,
+                            fillColor: configArea.cor,
+                            fillOpacity: 0.15,
+                            weight: 2
+                        }).addTo(map);
+                        
+                        polygon.bindPopup(`<strong>${area.area_nome}</strong><br>Agente: ${area.nome}`);
+                        areas.todas.push(polygon);
+                    }
+                });
+            }
+        }
+        
+        // Mostrar estatísticas
+        mostrarEstatisticas(data);
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados do mapa:', error);
+    }
+}
+
+// Mostrar estatísticas
+function mostrarEstatisticas(data) {
+    const container = document.getElementById('estatisticas-container');
+    const userTipo = '{{ user.tipo }}';
+    
+    let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">';
+    
+    if (userTipo === 'AGENTE' || userTipo === 'MEDICO') {
+        const totalPacientes = data.pacientes.length;
+        const casosGraves = data.pacientes.filter(p => p.nivel_gravidade === 'GRAVE' || p.nivel_gravidade === 'CRITICA').length;
+        const doencasCronicas = data.pacientes.filter(p => p.is_cronica).length;
+        const residenciasCadastradas = data.residencias.filter(r => r.status === 'CADASTRADA').length;
+        const residenciasNaoCadastradas = data.residencias.filter(r => r.status === 'NAO_CADASTRADA').length;
+        
+        html += `
+            <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.1), rgba(0, 217, 181, 0.05)); border-left: 4px solid var(--accent);">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-users" style="font-size: 2.5rem; color: var(--accent);"></i>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">${totalPacientes}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Pacientes ${userTipo === 'AGENTE' ? 'sob sua responsabilidade' : 'cadastrados'}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05)); border-left: 4px solid var(--danger);">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; color: var(--danger);"></i>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--danger);">${casosGraves}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Casos Graves/Críticos</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05)); border-left: 4px solid #f59e0b;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-heartbeat" style="font-size: 2.5rem; color: #f59e0b;"></i>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: #f59e0b;">${doencasCronicas}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Doenças Crônicas</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success);">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-home" style="font-size: 2.5rem; color: var(--success);"></i>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--success);">${residenciasCadastradas}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Residências Cadastradas</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05)); border-left: 4px solid #ef4444;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-home" style="font-size: 2.5rem; color: #ef4444;"></i>
+                    <div>
+                        <div style="font-size: 2rem; font-weight: bold; color: #ef4444;">${residenciasNaoCadastradas}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Residências Não Cadastradas</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Toggle de marcadores
+function toggleMarkers(tipo) {
+    const checkbox = document.getElementById('filter-' + tipo);
+    const isChecked = checkbox.checked;
+    
+    if (markers[tipo]) {
+        markers[tipo].forEach(marker => {
+            if (isChecked) {
+                marker.addTo(map);
+            } else {
+                map.removeLayer(marker);
+            }
+        });
+    }
+}
+
+// Toggle de áreas
+function toggleArea(tipo) {
+    const checkbox = document.getElementById('filter-' + tipo + '-area' + (tipo === 'todas' ? '' : 's'));
+    const isChecked = checkbox.checked;
+    
+    if (tipo === 'minha') {
+        if (areas.minha) {
+            if (isChecked) {
+                areas.minha.addTo(map);
+            } else {
+                map.removeLayer(areas.minha);
+            }
+        }
+    } else if (tipo === 'outras') {
+        areas.outras.forEach(polygon => {
+            if (isChecked) {
+                polygon.addTo(map);
+            } else {
+                map.removeLayer(polygon);
+            }
+        });
+    } else if (tipo === 'todas') {
+        areas.todas.forEach(polygon => {
+            if (isChecked) {
+                polygon.addTo(map);
+            } else {
+                map.removeLayer(polygon);
+            }
+        });
+    }
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar mapa
+    map = L.map('map').setView(aracajuCenter, 13);
+    
+    // Adicionar camada de tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+    
+    // Adicionar UBS
+    locationsUBS.forEach(ubs => {
+        const marker = L.marker([ubs.lat, ubs.lng], { icon: icons.ubs }).addTo(map);
+        marker.bindPopup(`
+            <div style="min-width: 200px;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #3b82f6; font-size: 1rem;">
+                    <i class="fas fa-hospital"></i> ${ubs.nome}
+                </h4>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-map-marker-alt"></i> ${ubs.endereco}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-phone"></i> ${ubs.telefone}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-clock"></i> ${ubs.horario}</p>
+            </div>
+        `);
+        markers.ubs.push(marker);
+    });
+    
+    // Carregar dados do backend
+    {% if user.tipo == 'AGENTE' or user.tipo == 'MEDICO' %}
+    carregarDadosMapa();
+    {% endif %}
+});
+</script>
 {% endblock %}

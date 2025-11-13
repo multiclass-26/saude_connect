@@ -1,0 +1,449 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}
+{% if user.tipo == 'AGENTE' %}bg-agente
+{% elif user.tipo == 'MEDICO' %}bg-medico
+{% elif user.tipo == 'PACIENTE' %}bg-paciente
+{% else %}bg-login{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1400px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <a href="javascript:history.back()" class="btn-back" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 10px; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid var(--accent); border-radius: 8px; background: white; transition: all 0.3s;">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-dark);"><i class="fas fa-map-marked-alt"></i> Mapa de Atendimento</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">
+                {% if user.tipo == 'AGENTE' %}
+                    Visualize sua área de atuação e pacientes atendidos
+                {% elif user.tipo == 'MEDICO' %}
+                    Visualize a distribuição de pacientes na região
+                {% elif user.tipo == 'PACIENTE' %}
+                    Encontre unidades de saúde próximas a você
+                {% endif %}
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="{% url 'perfil' %}" class="btn" style="background: white; border: 2px solid var(--accent); color: var(--accent-dark); text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; transition: all 0.2s;">
+                <i class="fas fa-user"></i> Perfil
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn" style="background: var(--accent); color: white; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: 10px; font-weight: 600; box-shadow: 0 2px 8px rgba(0, 217, 181, 0.2); transition: all 0.2s;">
+                Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Container do Mapa -->
+    <div class="panel" style="background: white; padding: 0; overflow: hidden; margin-bottom: 2rem;">
+        <div id="map" style="width: 100%; height: 600px; border-radius: 12px;"></div>
+    </div>
+
+    <!-- Controles e Filtros -->
+    <div class="panel" style="background: white; margin-bottom: 2rem;">
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; text-align: left;"><i class="fas fa-filter"></i> Filtros</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            {% if user.tipo == 'AGENTE' or user.tipo == 'MEDICO' %}
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-pacientes" checked onchange="toggleMarkers('pacientes')"> 
+                <i class="fas fa-users" style="color: var(--accent);"></i> Pacientes
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-graves" onchange="toggleMarkers('graves')"> 
+                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Casos Graves
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-naovisitados" onchange="toggleMarkers('naovisitados')"> 
+                <i class="fas fa-clock" style="color: var(--warning);"></i> Não Visitados
+            </label>
+            {% endif %}
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-ubs" checked onchange="toggleMarkers('ubs')"> 
+                <i class="fas fa-hospital" style="color: #3b82f6;"></i> UBS
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-hospitais" checked onchange="toggleMarkers('hospitais')"> 
+                <i class="fas fa-hospital-alt" style="color: var(--danger);"></i> Hospitais
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem 1rem; background: #f3f4f6; border-radius: 8px;">
+                <input type="checkbox" id="filter-farmacias" onchange="toggleMarkers('farmacias')"> 
+                <i class="fas fa-pills" style="color: var(--success);"></i> Farmácias
+            </label>
+        </div>
+    </div>
+
+    <!-- Estatísticas e Informações -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        {% if user.tipo == 'AGENTE' %}
+        <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.1), rgba(0, 217, 181, 0.05)); border-left: 4px solid var(--accent);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <i class="fas fa-users" style="font-size: 2.5rem; color: var(--accent);"></i>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">45</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Famílias Atendidas</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); border-left: 4px solid #3b82f6;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <i class="fas fa-map-marker-alt" style="font-size: 2.5rem; color: #3b82f6;"></i>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">8.5 km²</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Área de Cobertura</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <i class="fas fa-hospital" style="font-size: 2.5rem; color: var(--success);"></i>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);">3</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Unidades Próximas</div>
+                </div>
+            </div>
+        </div>
+        
+        {% elif user.tipo == 'MEDICO' %}
+        <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.1), rgba(0, 217, 181, 0.05)); border-left: 4px solid var(--accent);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;"><i class="fas fa-user-md"></i></div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">127</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Pacientes Cadastrados</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); border-left: 4px solid #3b82f6;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;">🏢</div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">2</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Unidades de Atendimento</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;">📊</div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);">15 km</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Raio de Atuação</div>
+                </div>
+            </div>
+        </div>
+        
+        {% elif user.tipo == 'PACIENTE' %}
+        <div class="panel" style="background: linear-gradient(135deg, rgba(0, 217, 181, 0.1), rgba(0, 217, 181, 0.05)); border-left: 4px solid var(--accent);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;"><i class="fas fa-hospital"></i></div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">1.2 km</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">UBS Mais Próxima</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05)); border-left: 4px solid #3b82f6;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;"><i class="fas fa-hotel"></i></div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">3.5 km</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Hospital Mais Próximo</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-left: 4px solid var(--success);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem;"><i class="fas fa-pills"></i></div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);">0.8 km</div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">Farmácia Mais Próxima</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Lista de Locais -->
+    <div class="panel" style="background: white;">
+        <h3 style="color: var(--accent-dark); margin-bottom: 1.5rem; text-align: left;"><i class="fas fa-map-marker-alt"></i> Locais de Interesse</h3>
+        <div style="display: grid; gap: 1rem;">
+            <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="color: var(--accent-dark); margin-bottom: 0.25rem; text-align: left;"><i class="fas fa-hospital"></i> UBS Centro</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0; text-align: left;">Rua Principal, 123 - Centro</p>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0; text-align: left;"><i class="fas fa-phone"></i> (11) 3333-4444 | <i class="fas fa-clock"></i> 7h às 17h</p>
+                </div>
+                <button style="padding: 0.5rem 1rem; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Ver no Mapa</button>
+            </div>
+            
+            <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="color: #3b82f6; margin-bottom: 0.25rem; text-align: left;"><i class="fas fa-hospital-alt"></i> Hospital Municipal</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0; text-align: left;">Av. Principal, 456 - Centro</p>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0; text-align: left;"><i class="fas fa-phone"></i> (11) 3333-5555 | <i class="fas fa-clock"></i> 24 horas</p>
+                </div>
+                <button style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Ver no Mapa</button>
+            </div>
+            
+            <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--success); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="color: var(--success); margin-bottom: 0.25rem; text-align: left;"><i class="fas fa-pills"></i> Farmácia Popular</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0; text-align: left;">Rua Comercial, 789 - Centro</p>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0; text-align: left;"><i class="fas fa-phone"></i> (11) 3333-6666 | <i class="fas fa-clock"></i> 8h às 22h</p>
+                </div>
+                <button style="padding: 0.5rem 1rem; background: var(--success); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Ver no Mapa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+a[href]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 217, 181, 0.35) !important;
+}
+
+.panel:hover {
+    transform: translateY(-2px);
+}
+</style>
+
+<script>
+// Inicialização do Mapa de Aracaju
+let map;
+let markers = {
+    pacientes: [],
+    graves: [],
+    naovisitados: [],
+    ubs: [],
+    hospitais: [],
+    farmacias: []
+};
+
+// Coordenadas de Aracaju (centro)
+const aracajuCenter = [-10.9472, -37.0731];
+
+// Dados fictícios de Aracaju
+const locations = {
+    {% if user.tipo == 'AGENTE' or user.tipo == 'MEDICO' %}
+    pacientes: [
+        { lat: -10.9450, lng: -37.0720, nome: "Maria Silva", cpf: "123.456.789-00", idade: 45, condicao: "Hipertensão", visitado: true },
+        { lat: -10.9480, lng: -37.0750, nome: "João Santos", cpf: "987.654.321-00", idade: 62, condicao: "Diabetes", visitado: true },
+        { lat: -10.9460, lng: -37.0710, nome: "Ana Costa", cpf: "456.789.123-00", idade: 38, condicao: "Acompanhamento pré-natal", visitado: false },
+        { lat: -10.9490, lng: -37.0740, nome: "Pedro Oliveira", cpf: "321.654.987-00", idade: 55, condicao: "Hipertensão + Diabetes", grave: true, visitado: false },
+        { lat: -10.9440, lng: -37.0760, nome: "Carla Mendes", cpf: "147.258.369-00", idade: 71, condicao: "Insuficiência cardíaca", grave: true, visitado: true },
+        { lat: -10.9500, lng: -37.0700, nome: "Roberto Lima", cpf: "258.369.147-00", idade: 48, condicao: "Controle de pressão", visitado: false },
+        { lat: -10.9430, lng: -37.0730, nome: "Juliana Rocha", cpf: "369.147.258-00", idade: 33, condicao: "Gestante", visitado: true },
+        { lat: -10.9470, lng: -37.0770, nome: "Francisco Alves", cpf: "741.852.963-00", idade: 59, condicao: "DPOC", grave: true, visitado: false }
+    ],
+    {% endif %}
+    ubs: [
+        { lat: -10.9472, lng: -37.0731, nome: "UBS Centro", endereco: "Rua João Pessoa, 123", telefone: "(79) 3234-5678", horario: "7h às 17h" },
+        { lat: -10.9520, lng: -37.0680, nome: "UBS Jardins", endereco: "Av. Beira Mar, 456", telefone: "(79) 3234-5679", horario: "7h às 17h" },
+        { lat: -10.9400, lng: -37.0800, nome: "UBS Bugio", endereco: "Rua Laranjeiras, 789", telefone: "(79) 3234-5680", horario: "7h às 17h" }
+    ],
+    hospitais: [
+        { lat: -10.9350, lng: -37.0650, nome: "Hospital Universitário", endereco: "Campus Universitário", telefone: "(79) 3194-7000", horario: "24 horas" },
+        { lat: -10.9580, lng: -37.0820, nome: "Hospital de Urgências", endereco: "Av. Tancredo Neves, 3333", telefone: "(79) 3194-8000", horario: "24 horas" }
+    ],
+    farmacias: [
+        { lat: -10.9455, lng: -37.0745, nome: "Farmácia Popular", endereco: "Rua Itabaiana, 234", telefone: "(79) 3211-9876", horario: "8h às 22h" },
+        { lat: -10.9485, lng: -37.0715, nome: "Drogaria São Paulo", endereco: "Av. Hermes Fontes, 567", telefone: "(79) 3211-9877", horario: "24 horas" },
+        { lat: -10.9420, lng: -37.0770, nome: "Farmácia Preço Baixo", endereco: "Rua São Cristóvão, 890", telefone: "(79) 3211-9878", horario: "8h às 20h" }
+    ]
+};
+
+// Ícones customizados
+const icons = {
+    paciente: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMDBEOUI1Ij48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0wIDkuNWMtMS4zOCAwLTIuNS0xLjEyLTIuNS0yLjVzMS4xMi0yLjUgMi41LTIuNSAyLjUgMS4xMiAyLjUgMi41LTEuMTIgMi41LTIuNSAyLjV6Ii8+PC9zdmc+',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    }),
+    grave: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjRUYzNDM0Ij48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0xIDhoLTJ2LTJoMnYyek0xMiAxN2MtLjU1IDAtMS0uNDUtMS0xdi00YzAtLjU1LjQ1LTEgMS0xczEgLjQ1IDEgMXY0YzAgLjU1LS40NSAxLTEgMXoiLz48L3N2Zz4=',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    }),
+    naovisitado: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjRjU5RTBCIj48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0wIDkuNWMtMS4zOCAwLTIuNS0xLjEyLTIuNS0yLjVzMS4xMi0yLjUgMi41LTIuNSAyLjUgMS4xMiAyLjUgMi41LTEuMTIgMi41LTIuNSAyLjV6Ii8+PC9zdmc+',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    }),
+    ubs: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjM0I4MkY2Ij48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0wIDdoLTJ2MmgtMnYtMmgtMlY3aDJWNWgydjJoMnYyeiIvPjwvc3ZnPg==',
+        iconSize: [36, 36],
+        iconAnchor: [18, 36],
+        popupAnchor: [0, -36]
+    }),
+    hospital: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzOCIgaGVpZ2h0PSIzOCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjRUYzNDM0Ij48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0wIDdoLTJ2MmgtMnYtMmgtMlY3aDJWNWgydjJoMnYyeiIvPjwvc3ZnPg==',
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -38]
+    }),
+    farmacia: L.icon({
+        iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMTBCOTgxIj48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0wIDcuNWMtMS4zOCAwLTIuNS0xLjEyLTIuNS0yLjVzMS4xMi0yLjUgMi41LTIuNSAyLjUgMS4xMiAyLjUgMi41LTEuMTIgMi41LTIuNSAyLjV6Ii8+PC9zdmc+',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    })
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar mapa centrado em Aracaju
+    map = L.map('map').setView(aracajuCenter, 13);
+
+    // Adicionar camada de tiles (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    // Adicionar marcadores
+    {% if user.tipo == 'AGENTE' or user.tipo == 'MEDICO' %}
+    // Adicionar pacientes
+    locations.pacientes.forEach(function(paciente) {
+        let icon = paciente.grave ? icons.grave : (paciente.visitado ? icons.paciente : icons.naovisitado);
+        let marker = L.marker([paciente.lat, paciente.lng], { icon: icon }).addTo(map);
+        
+        let popupContent = `
+            <div style="min-width: 200px;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-dark); font-size: 1rem;">
+                    <i class="fas fa-user"></i> ${paciente.nome}
+                </h4>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>CPF:</strong> ${paciente.cpf}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Idade:</strong> ${paciente.idade} anos</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><strong>Condição:</strong> ${paciente.condicao}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;">
+                    <strong>Status:</strong> 
+                    <span style="color: ${paciente.visitado ? 'var(--success)' : 'var(--warning)'};">
+                        ${paciente.visitado ? '✓ Visitado' : '⏳ Não visitado'}
+                    </span>
+                </p>
+                ${paciente.grave ? '<p style="margin: 0.5rem 0 0 0; padding: 0.5rem; background: #fee; color: var(--danger); border-radius: 4px; font-size: 0.85rem; font-weight: bold;"><i class="fas fa-exclamation-triangle"></i> Caso Grave - Atenção Prioritária</p>' : ''}
+            </div>
+        `;
+        
+        marker.bindPopup(popupContent);
+        
+        // Classificar marcadores
+        markers.pacientes.push(marker);
+        if (paciente.grave) markers.graves.push(marker);
+        if (!paciente.visitado) markers.naovisitados.push(marker);
+    });
+    {% endif %}
+
+    // Adicionar UBS
+    locations.ubs.forEach(function(ubs) {
+        let marker = L.marker([ubs.lat, ubs.lng], { icon: icons.ubs }).addTo(map);
+        
+        marker.bindPopup(`
+            <div style="min-width: 200px;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #3b82f6; font-size: 1rem;">
+                    <i class="fas fa-hospital"></i> ${ubs.nome}
+                </h4>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-map-marker-alt"></i> ${ubs.endereco}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-phone"></i> ${ubs.telefone}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-clock"></i> ${ubs.horario}</p>
+            </div>
+        `);
+        
+        markers.ubs.push(marker);
+    });
+
+    // Adicionar Hospitais
+    locations.hospitais.forEach(function(hospital) {
+        let marker = L.marker([hospital.lat, hospital.lng], { icon: icons.hospital }).addTo(map);
+        
+        marker.bindPopup(`
+            <div style="min-width: 200px;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--danger); font-size: 1rem;">
+                    <i class="fas fa-hospital-alt"></i> ${hospital.nome}
+                </h4>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-map-marker-alt"></i> ${hospital.endereco}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-phone"></i> ${hospital.telefone}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-clock"></i> ${hospital.horario}</p>
+            </div>
+        `);
+        
+        markers.hospitais.push(marker);
+    });
+
+    // Adicionar Farmácias
+    locations.farmacias.forEach(function(farmacia) {
+        let marker = L.marker([farmacia.lat, farmacia.lng], { icon: icons.farmacia });
+        
+        marker.bindPopup(`
+            <div style="min-width: 200px;">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--success); font-size: 1rem;">
+                    <i class="fas fa-pills"></i> ${farmacia.nome}
+                </h4>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-map-marker-alt"></i> ${farmacia.endereco}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-phone"></i> ${farmacia.telefone}</p>
+                <p style="margin: 0.25rem 0; font-size: 0.85rem;"><i class="fas fa-clock"></i> ${farmacia.horario}</p>
+            </div>
+        `);
+        
+        markers.farmacias.push(marker);
+    });
+
+    {% if user.tipo == 'AGENTE' or user.tipo == 'MEDICO' %}
+    // Área de atuação do agente (polígono)
+    const areaAtuacao = L.polygon([
+        [-10.9420, -37.0680],
+        [-10.9420, -37.0780],
+        [-10.9520, -37.0780],
+        [-10.9520, -37.0680]
+    ], {
+        color: 'var(--accent)',
+        fillColor: 'var(--accent)',
+        fillOpacity: 0.15,
+        weight: 2
+    }).addTo(map);
+    
+    areaAtuacao.bindPopup('<strong>Área de Atuação</strong><br>Zona de responsabilidade do agente');
+    {% endif %}
+});
+
+// Função para toggle de marcadores
+function toggleMarkers(tipo) {
+    const checkbox = document.getElementById('filter-' + tipo);
+    const isChecked = checkbox.checked;
+    
+    if (markers[tipo]) {
+        markers[tipo].forEach(function(marker) {
+            if (isChecked) {
+                marker.addTo(map);
+            } else {
+                map.removeLayer(marker);
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

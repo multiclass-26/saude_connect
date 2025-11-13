@@ -21,9 +21,9 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS('✓ Admin criado'))
 
             # Médico
-            if not Usuario.objects.filter(username='12345678900').exists():
+            if not Usuario.objects.filter(username='medico').exists():
                 medico_user = Usuario.objects.create_user(
-                    username='12345678900',
+                    username='medico',
                     email='medico@saude.com',
                     password='123',
                     first_name='Carlos',
@@ -33,12 +33,12 @@ class Command(BaseCommand):
                     endereco='Rua das Flores, 123'
                 )
                 Medico.objects.create(usuario=medico_user, crm='CRM12345')
-                self.stdout.write(self.style.SUCCESS('✓ Médico criado'))
+                self.stdout.write(self.style.SUCCESS('✓ Médico criado (username: medico)'))
 
             # Agente
-            if not Usuario.objects.filter(username='98765432100').exists():
+            if not Usuario.objects.filter(username='agente').exists():
                 agente_user = Usuario.objects.create_user(
-                    username='98765432100',
+                    username='agente',
                     email='agente@saude.com',
                     password='123',
                     first_name='Maria',
@@ -48,12 +48,12 @@ class Command(BaseCommand):
                     endereco='Av. Principal, 456'
                 )
                 AgenteSaude.objects.create(usuario=agente_user, id_agente='AG001')
-                self.stdout.write(self.style.SUCCESS('✓ Agente criado'))
+                self.stdout.write(self.style.SUCCESS('✓ Agente criado (username: agente)'))
 
             # Paciente
-            if not Usuario.objects.filter(username='11122233344').exists():
+            if not Usuario.objects.filter(username='paciente').exists():
                 Usuario.objects.create_user(
-                    username='11122233344',
+                    username='paciente',
                     email='paciente@email.com',
                     password='123',
                     first_name='Joao',
@@ -62,6 +62,6 @@ class Command(BaseCommand):
                     cpf='111.222.333-44',
                     endereco='Rua Nova, 789'
                 )
-                self.stdout.write(self.style.SUCCESS('✓ Paciente criado'))
+                self.stdout.write(self.style.SUCCESS('✓ Paciente criado (username: paciente)'))
 
         self.stdout.write(self.style.SUCCESS('\n=== USUÁRIOS CRIADOS ==='))

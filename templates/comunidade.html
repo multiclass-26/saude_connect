@@ -6,49 +6,36 @@
 {% block content %}
 <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
     <!-- Botão Voltar -->
-    <a href="javascript:history.back()" class="back" style="display: inline-block; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 15px; font-weight: 600;">← Voltar</a>
+    <a href="javascript:history.back()" class="btn-back" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 15px; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid var(--accent); border-radius: 8px; background: white; transition: all 0.3s;">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
     
     <!-- Header da Página -->
     <div style="text-align: center; margin-bottom: 3rem;">
-        <h1 style="font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-            💙 Comunidade Saúde Conectada
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+            <i class="fas fa-heart" style="color: var(--accent);"></i> Comunidade Saúde Conectada
         </h1>
         <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
             Conectando profissionais da saúde, agentes comunitários e pacientes em uma rede colaborativa
         </p>
     </div>
 
-    <!-- Estatísticas da Comunidade -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
-        <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); border: 1px solid var(--primary);">
-            <div style="font-size: 3rem; margin-bottom: 0.5rem;">👥</div>
-            <div style="font-size: 2rem; font-weight: bold; color: var(--primary); margin-bottom: 0.5rem;">1.284</div>
-            <div style="color: var(--text-secondary);">Membros Ativos</div>
-        </div>
-        <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1)); border: 1px solid var(--accent);">
-            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏥</div>
-            <div style="font-size: 2rem; font-weight: bold; color: var(--accent); margin-bottom: 0.5rem;">247</div>
-            <div style="color: var(--text-secondary);">Profissionais de Saúde</div>
-        </div>
-        <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.1)); border: 1px solid var(--secondary);">
-            <div style="font-size: 3rem; margin-bottom: 0.5rem;">💬</div>
-            <div style="font-size: 2rem; font-weight: bold; color: var(--secondary); margin-bottom: 0.5rem;">5.632</div>
-            <div style="color: var(--text-secondary);">Interações Mensais</div>
-        </div>
-    </div>
-
     <!-- Seções de Recursos -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
-        <!-- Seção de Exercícios Físicos -->
+        <!-- Seção de Exercícios Físicos (Colapsável) -->
         <div class="panel" style="grid-column: 1 / -1;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">🏃‍♂️</div>
-                <h2 style="font-size: 1.5rem; color: #10b981; text-align: left; margin: 0;">Exercícios Físicos</h2>
-            </div>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: left;">
+            <button onclick="toggleSection('exercicios')" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: none; border: none; cursor: pointer; padding: 0; text-align: left;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-running" style="font-size: 2.5rem; color: #10b981;"></i>
+                    <h2 style="font-size: 1.5rem; color: #10b981; margin: 0;">Exercícios Físicos</h2>
+                </div>
+                <i id="icon-exercicios" class="fas fa-chevron-down" style="font-size: 1.5rem; color: #10b981; transition: transform 0.3s;"></i>
+            </button>
+            <p style="color: var(--text-secondary); margin: 1rem 0; text-align: left;">
                 Aprenda exercícios práticos para melhorar sua saúde e bem-estar físico.
             </p>
             
+            <div id="section-exercicios" style="display: none; margin-top: 1.5rem;">
             <!-- Grid de Vídeos de Exercícios -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                 <!-- Exercício 1 -->
@@ -123,18 +110,24 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Seção de Anúncios Públicos -->
-        <div class="panel" style="grid-column: 1 / -1;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">📢</div>
-                <h2 style="font-size: 1.5rem; color: #f59e0b; text-align: left; margin: 0;">Anúncios Públicos</h2>
             </div>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align: left;">
+        </div>
+    </div>
+
+        <!-- Seção de Anúncios Públicos (Colapsável) -->
+        <div class="panel" style="grid-column: 1 / -1;">
+            <button onclick="toggleSection('anuncios')" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: none; border: none; cursor: pointer; padding: 0; text-align: left;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fas fa-bullhorn" style="font-size: 2.5rem; color: #f59e0b;"></i>
+                    <h2 style="font-size: 1.5rem; color: #f59e0b; margin: 0;">Anúncios Públicos</h2>
+                </div>
+                <i id="icon-anuncios" class="fas fa-chevron-down" style="font-size: 1.5rem; color: #f59e0b; transition: transform 0.3s;"></i>
+            </button>
+            <p style="color: var(--text-secondary); margin: 1rem 0; text-align: left;">
                 Informações importantes sobre saúde pública, campanhas e avisos da comunidade.
             </p>
             
+            <div id="section-anuncios" style="display: none; margin-top: 1.5rem;">
             <!-- Grid de Vídeos de Anúncios -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                 <!-- Anúncio 1 -->
@@ -209,19 +202,21 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
+    </div>
 
         <!-- Fórum -->
         <div class="panel">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">💭</div>
+                <i class="fas fa-comment-dots" style="font-size: 2.5rem; color: var(--primary);"></i>
                 <h2 style="font-size: 1.5rem; color: var(--primary);">Fórum de Discussões</h2>
             </div>
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
                 Troque experiências e tire dúvidas com outros profissionais da saúde e membros da comunidade.
             </p>
             <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
-                <div style="color: var(--text-primary); font-weight: 500;">📌 Tópico em Destaque</div>
+                <div style="color: var(--text-primary); font-weight: 500;"><i class="fas fa-thumbtack"></i> Tópico em Destaque</div>
                 <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
                     "Melhores práticas no acompanhamento de pacientes com diabetes"
                 </div>
@@ -232,14 +227,14 @@
         <!-- Eventos -->
         <div class="panel">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">📅</div>
+                <i class="fas fa-calendar-alt" style="font-size: 2.5rem; color: var(--accent);"></i>
                 <h2 style="font-size: 1.5rem; color: var(--accent);">Eventos e Webinars</h2>
             </div>
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
                 Participe de eventos online gratuitos sobre saúde comunitária, tecnologia e bem-estar.
             </p>
             <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
-                <div style="color: var(--text-primary); font-weight: 500;">🎯 Próximo Evento</div>
+                <div style="color: var(--text-primary); font-weight: 500;"><i class="fas fa-calendar-check"></i> Próximo Evento</div>
                 <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
                     "Tecnologia na Atenção Básica" - 15/11 às 19h
                 </div>
@@ -250,14 +245,14 @@
         <!-- Biblioteca -->
         <div class="panel">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <div style="font-size: 2.5rem;">📚</div>
+                <i class="fas fa-book" style="font-size: 2.5rem; color: var(--secondary);"></i>
                 <h2 style="font-size: 1.5rem; color: var(--secondary);">Biblioteca de Recursos</h2>
             </div>
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
                 Acesse artigos, guias práticos e materiais educativos sobre saúde pública e gestão.
             </p>
             <div style="background: rgba(139, 92, 246, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
-                <div style="color: var(--text-primary); font-weight: 500;">📖 Mais Acessado</div>
+                <div style="color: var(--text-primary); font-weight: 500;"><i class="fas fa-book-open"></i> Mais Acessado</div>
                 <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
                     "Guia Completo de Medicamentos para ACS"
                 </div>
@@ -304,6 +299,34 @@
     object-fit: contain;
 }
 
+.video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 2rem;
+}
+
+.video-placeholder i {
+    font-size: 3rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+
+.video-placeholder p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 250px;
+}
+
 /* Efeito hover nos cards de vídeo */
 .panel > div > div:hover {
     transform: translateY(-4px);
@@ -317,5 +340,52 @@
     }
 }
 </style>
+
+<script>
+// Adiciona tratamento de erro para vídeos não encontrados
+document.addEventListener('DOMContentLoaded', function() {
+    const videos = document.querySelectorAll('video');
+    videos.forEach(function(video) {
+        // Tratamento de erro quando o vídeo não carrega
+        video.addEventListener('error', function(e) {
+            console.log('Erro ao carregar vídeo:', video.src);
+            const container = video.closest('.video-container');
+            if (container) {
+                video.style.display = 'none';
+                
+                // Cria elemento de placeholder se não existir
+                let placeholder = container.querySelector('.video-placeholder');
+                if (!placeholder) {
+                    placeholder = document.createElement('div');
+                    placeholder.className = 'video-placeholder';
+                    placeholder.innerHTML = `
+                        <i class="fas fa-video-slash"></i>
+                        <p><strong>Vídeo não disponível</strong><br>Este conteúdo está sendo preparado e estará disponível em breve.</p>
+                    `;
+                    container.appendChild(placeholder);
+                }
+                placeholder.style.display = 'flex';
+            }
+        }, true);
+        
+        // Força verificação após carregamento da página
+        video.load();
+    });
+});
+
+// Toggle de Seções (fora do DOMContentLoaded)
+function toggleSection(sectionId) {
+    const section = document.getElementById('section-' + sectionId);
+    const icon = document.getElementById('icon-' + sectionId);
+    
+    if (section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        section.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+    }
+}
+</script>
 
 {% endblock %}

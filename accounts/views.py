@@ -12,35 +12,20 @@ def login_view(request):
         return redirect('dashboard')
     
     if request.method == 'POST':
-        tipo = request.POST.get('tipo')
         identificador = request.POST.get('identificador')
         senha = request.POST.get('senha')
         
-        try:
-            if tipo == 'medico':
-                medico = Medico.objects.get(crm=identificador)
-                user = medico.usuario
-            elif tipo == 'agente':
-                agente = AgenteSaude.objects.get(id_agente=identificador)
-                user = agente.usuario
-            elif tipo == 'paciente':
-                user = Usuario.objects.get(cpf=identificador, tipo='PACIENTE')
-            else:
-                messages.error(request, 'Tipo de usuário inválido.')
-                return render(request, 'login.html')
-            
-            user = authenticate(request, username=user.username, password=senha)
-            
-            if user is not None:
-                login(request, user)
-                # Manter sessão ativa por 30 dias
-                request.session.set_expiry(2592000)  # 30 dias em segundos
-                messages.success(request, 'Login bem-sucedido!')
-                return redirect('dashboard')
-            else:
-                messages.error(request, 'Credenciais inválidas.')
-        except (Medico.DoesNotExist, AgenteSaude.DoesNotExist, Usuario.DoesNotExist):
-            messages.error(request, 'Usuário não encontrado.')
+        # Tenta autenticar diretamente com o username
+        user = authenticate(request, username=identificador, password=senha)
+        
+        if user is not None:
+            login(request, user)
+            # Manter sessão ativa por 30 dias
+            request.session.set_expiry(2592000)  # 30 dias em segundos
+            messages.success(request, 'Login bem-sucedido!')
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Usuário ou senha inválidos.')
     
     return render(request, 'login.html')
 

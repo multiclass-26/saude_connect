@@ -5,7 +5,9 @@
 
 {% block content %}
 <section class="screen active">
-    <a href="{% url 'login' %}" class="back" style="color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 15px; display: inline-block; font-weight: 600;">← Voltar ao Login</a>
+    <a href="{% url 'login' %}" class="btn-back" style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-dark); font-size: 1rem; text-decoration: none; margin-bottom: 15px; font-weight: 600; padding: 0.5rem 1rem; border: 2px solid var(--accent); border-radius: 8px; background: white; transition: all 0.3s;">
+        <i class="fas fa-arrow-left"></i> Voltar ao Login
+    </a>
     <h2 style="color: var(--accent-dark); font-size: 2rem; font-weight: 800;">Criar Nova Conta</h2>
     <nav class="login-block">
         <button onclick="showRegForm('agente')">Agente de Saúde</button>
