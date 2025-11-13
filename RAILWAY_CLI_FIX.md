@@ -1,6 +1,48 @@
-# 🚂 Corrigir Usuários no Railway via CLI
+# 🚂 Corrigir Usuários no Railway
 
-## 📋 Passo a Passo
+## ✅ SOLUÇÃO RÁPIDA (Recomendado)
+
+### 1️⃣ Acesse a URL do Setup
+
+Abra no navegador:
+```
+https://saudeconnect.com.br/setup/
+```
+
+Esta página vai **automaticamente**:
+- ✓ Criar/resetar todos os 6 usuários
+- ✓ Configurar as senhas corretas
+- ✓ Criar perfis de médicos e agentes
+- ✓ Mostrar todas as credenciais
+
+### 2️⃣ Credenciais após Setup
+
+```
+MÉDICOS:
+  • admin / admin123 (Superusuário)
+  • medico / medico123
+
+AGENTES DE SAÚDE:
+  • agente / agente123 (Paulo)
+  • andre_agente / agente123 (André)
+  • fernanda_agente / agente123 (Fernanda)
+
+PACIENTE:
+  • paciente / paciente123
+```
+
+### 3️⃣ Teste o Login
+
+Após executar o setup, acesse:
+```
+https://saudeconnect.com.br/login/
+```
+
+Faça login com qualquer uma das credenciais acima.
+
+---
+
+Se preferir usar o Railway CLI:
 
 ### 1️⃣ Instalar Railway CLI (se ainda não tiver)
 
@@ -29,39 +71,17 @@ Na pasta do projeto:
 cd C:\Users\andre\Documents\Unit\app_saude_connect
 railway link
 ```
-- Selecione seu projeto "saude_connect" (ou o nome que você deu)
+- Selecione seu projeto "saude_connect"
 
-### 4️⃣ Resetar Usuários no Railway
+### 4️⃣ Executar Comando Django
 
-Execute o script para criar/resetar as senhas:
-
-```bash
-railway run python resetar_usuarios_railway.py
-```
-
-**OU** se não funcionar, tente:
+Execute o comando personalizado para resetar usuários:
 
 ```bash
-railway shell
-python resetar_usuarios_railway.py
-exit
+railway run python manage.py resetar_usuarios
 ```
 
-### 5️⃣ Credenciais após Reset
-
-```
-MÉDICOS:
-  • admin / admin123 (Superusuário)
-  • medico / medico123
-
-AGENTES DE SAÚDE:
-  • agente / agente123 (Paulo)
-  • andre_agente / agente123 (André)
-  • fernanda_agente / agente123 (Fernanda)
-
-PACIENTE:
-  • paciente / paciente123
-```
+**Nota:** O comando `railway run` executa **localmente** mas com as variáveis do Railway. Para executar no servidor, use a página `/setup/` conforme método recomendado acima.
 
 ---
 

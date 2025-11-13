@@ -297,7 +297,12 @@ def setup_view(request):
         html += "<li>5 pacientes de teste</li>"
         html += "<li>4 lembretes de medicação</li>"
         html += "</ul>"
-        html += "<p><a href='/login/' style='font-size: 20px; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px;'>Ir para Login</a></p>"
+        html += "<div style='margin-top: 30px; padding: 20px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px;'>"
+        html += "<h3 style='color: #856404; margin-top: 0;'>🗺️ IMPORTANTE: Popular Dados do Mapa</h3>"
+        html += "<p style='color: #856404;'>Para o mapa funcionar com os 156 pacientes e 65 residências, você precisa executar:</p>"
+        html += "<p><a href='/popular-mapa/' style='font-size: 18px; padding: 12px 25px; background: #ff9800; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;'>🗺️ POPULAR DADOS DO MAPA (156 pacientes)</a></p>"
+        html += "</div>"
+        html += "<p style='margin-top: 20px;'><a href='/login/' style='font-size: 20px; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px;'>Ir para Login</a></p>"
         
     except Exception as e:
         html += f"<p style='color: red;'>❌ Erro: {str(e)}</p>"
