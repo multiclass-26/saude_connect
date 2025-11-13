@@ -136,27 +136,28 @@ def popular_mapa_view(request):
                     lng = coords['lng'] + random.uniform(-0.01, 0.01)
                     
                     rua = random.choice(ruas)
-                    numero = random.randint(10, 999)
-                    endereco = f"{rua}, {numero}"
+                    num = random.randint(10, 999)
+                    endereco = f"{rua}, {num}"
                     
                     # Status da residência
-                    status = random.choice(['cadastrada'] * 7 + ['não cadastrada'] * 3)
+                    status_choice = random.choice(['CADASTRADA'] * 7 + ['NAO_CADASTRADA'] * 3)
                     qtd_moradores = random.randint(1, 6)
                     
                     residencia = Residencia.objects.create(
-                        endereco=endereco,
+                        endereco_completo=rua,
+                        numero=str(num),
                         bairro=bairro,
                         cidade='Aracaju',
                         latitude=lat,
                         longitude=lng,
-                        status=status,
+                        status=status_choice,
                         qtd_moradores=qtd_moradores,
                         agente=agente
                     )
                     residencias_criadas += 1
                     
                     # 2-3 pacientes por residência se cadastrada
-                    if status == 'cadastrada':
+                    if status_choice == 'CADASTRADA':
                         num_pacientes = random.randint(1, 3)
                         
                         for j in range(num_pacientes):
@@ -165,7 +166,6 @@ def popular_mapa_view(request):
                             
                             idade = random.randint(25, 85)
                             peso = round(random.uniform(50, 95), 1)
-                            altura = round(random.uniform(1.50, 1.90), 2)
                             
                             # Dados clínicos
                             tem_doenca = random.random() < 0.7  # 70% tem doença crônica
@@ -202,7 +202,6 @@ def popular_mapa_view(request):
                                 cpf=cpf,
                                 idade=idade,
                                 peso=peso,
-                                altura=altura,
                                 cidade='Aracaju',
                                 bairro=bairro,
                                 endereco=endereco,
@@ -214,12 +213,11 @@ def popular_mapa_view(request):
                                 doenca_atual=doenca_atual,
                                 is_cronica=tem_doenca,
                                 is_contagiosa=contagiosa,
-                                nivel_gravidade=gravidade if tem_doenca else 'Leve',
-                                medicamentos_prescritos=meds_texto,
+                                nivel_gravidade=gravidade if tem_doenca else 'LEVE',
+                                medicamentos_prescritos=(num_meds > 0),
                                 necessidades_basicas=necessidades,
                                 recebe_auxilio_governo=auxilio,
                                 tipo_auxilio=tipo_auxilio,
-                                prontuario_completo=random.choice([True, False]),
                                 
                                 # Campos originais
                                 pessoas_na_casa=qtd_moradores,
